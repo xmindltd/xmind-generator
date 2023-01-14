@@ -1,0 +1,31 @@
+{
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "compilerOptions": {
+    "allowJs": false,
+    "rootDir": "./src",
+    "outDir": "./lib/esm",
+    "target": "ES2017",
+    "module": "ES2020",
+    "sourceMap": false,
+    "declaration": true,
+    "declarationMap": false,
+    /* Module Resolution */
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": [
+      "ES2015",
+      "ES2016",
+      "ES2017"
+    ],
+    "newLine": "lf",
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+  }
+}
