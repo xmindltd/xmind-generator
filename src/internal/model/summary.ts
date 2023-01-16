@@ -1,0 +1,1 @@
+// Summary class model
