@@ -13,6 +13,7 @@ describe('[internal/model/workbook] addRoot()', () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
     expect(workbook.sheets).toHaveLength(1)
+    expect(workbook.sheets[0].title).toBe('Grill House')
     expect(workbook.sheets[0].topic.title).toBe('Grill House')
   })
 
@@ -20,6 +21,6 @@ describe('[internal/model/workbook] addRoot()', () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
 
-    expect(() => workbook.createRoot('Another Grill House')).toThrowError('Duplicated root sheet created')
+    expect(() => workbook.createRoot('Another Grill House')).toThrowError('Duplicated root topic creation')
   })
 })

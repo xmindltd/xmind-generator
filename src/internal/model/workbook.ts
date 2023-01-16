@@ -11,7 +11,7 @@ export class Workbook {
     if (this.sheets.length === 0) {
       this.addSheet(title)
     } else {
-      throw new Error('Duplicated root sheet created')
+      throw new Error('Duplicated root topic creation')
     }
   }
 
