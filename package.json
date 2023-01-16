@@ -6,14 +6,15 @@
   "author": "Xmind Ltd.",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npm run prettier && rm -rf lib && tsc --build",
+    "build": "yarn prettier && rm -rf lib && tsc --build",
+    "test": "vitest",
     "prettier": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
     "prettier": "^2.8.3",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "vitest": "^0.27.1"
   }
 }
