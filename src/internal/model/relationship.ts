@@ -1,0 +1,1 @@
+// Relationship class model
