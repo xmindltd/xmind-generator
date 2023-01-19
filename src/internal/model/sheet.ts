@@ -1,15 +1,29 @@
+import { uuid } from './common'
 import { Topic } from './topic'
 
 export class Sheet {
-  private rootTopic: Topic
   readonly title: string
+  readonly id: string
+  private _rootTopic: Topic | null = null
 
   constructor(title: string) {
+    this.id = uuid()
     this.title = title
-    this.rootTopic = new Topic(title)
   }
 
-  get topic() : Topic {
-    return this.rootTopic
+  get rootTopic(): Topic | null {
+    return this._rootTopic
+  }
+
+  public addRootTopic(title: string): Topic {
+    if (this._rootTopic) {
+      throw new Error('Duplicated root topic creation')
+    }
+    this._rootTopic = new Topic(title)
+    return this._rootTopic
+  }
+
+  public removeRootTopic(): void {
+    this._rootTopic = null
   }
 }

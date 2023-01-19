@@ -7,20 +7,38 @@ describe('[internal/model/workbook] constructor', () => {
   })
 })
 
-
-describe('[internal/model/workbook] addRoot()', () => {
-  it('should create a sheet attached to the workbook', () => {
+describe('[internal/model/workbook] createRoot()', () => {
+  it('should create a sheet with default name as well as its root topic attached to the workbook', () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
     expect(workbook.sheets).toHaveLength(1)
-    expect(workbook.sheets[0].title).toBe('Grill House')
-    expect(workbook.sheets[0].topic.title).toBe('Grill House')
+    expect(workbook.sheets[0].title).toBe('Map 1')
+    expect(workbook.sheets[0].rootTopic?.title).toBe('Grill House')
   })
+})
 
-  it('should throw exception if workbook already have sheets', () => {
+describe('[internal/model/workbook] addSheet()', () => {
+  it('should create a sheet attached to the workbook', () => {
     const workbook = new Workbook()
-    workbook.createRoot('Grill House')
+    workbook.addSheet('Grill House')
+    expect(workbook.sheets).toHaveLength(1)
+    expect(workbook.sheets[0].title).toBe('Grill House')
+  })
+})
 
-    expect(() => workbook.createRoot('Another Grill House')).toThrowError('Duplicated root topic creation')
+describe('[internal/model/workbook] getSheet()', () => {
+  it('should get a sheet from workbook properly', () => {
+    const workbook = new Workbook()
+    const sheet = workbook.addSheet('Grill House')
+    expect(workbook.getSheet(sheet.id)).toBe(sheet)
+  })
+})
+
+describe('[internal/model/workbook] getSheet()', () => {
+  it('should remove a sheet from workbook properly', () => {
+    const workbook = new Workbook()
+    const sheet = workbook.addSheet('Grill House')
+    workbook.removeSheet(sheet.id)
+    expect(workbook.getSheet(sheet.id)).toBeNull()
   })
 })

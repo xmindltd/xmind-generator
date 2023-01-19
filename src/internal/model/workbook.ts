@@ -1,21 +1,33 @@
-import { Sheet } from "./sheet"
+import { Sheet } from './sheet'
+import { Topic } from './topic'
 
 export class Workbook {
-  readonly sheets: Sheet[]
+  private _sheets: Sheet[]
 
   constructor() {
-    this.sheets = []
+    this._sheets = []
   }
 
-  createRoot(title: string) {
-    if (this.sheets.length === 0) {
-      this.addSheet(title)
-    } else {
-      throw new Error('Duplicated root topic creation')
-    }
+  get sheets(): ReadonlyArray<Sheet> {
+    return this._sheets
   }
 
-  addSheet(title: string) {
-    this.sheets.push(new Sheet(title))
+  public createRoot(title: string): Topic {
+    const sheetName = `Map ${this.sheets.length + 1}`
+    return this.addSheet(sheetName).addRootTopic(title)
+  }
+
+  public addSheet(title: string): Sheet {
+    const sheet = new Sheet(title)
+    this._sheets.push(sheet)
+    return sheet
+  }
+
+  public getSheet(sheetId: string): Sheet | null {
+    return this.sheets.find(sheet => sheet.id === sheetId) ?? null
+  }
+
+  public removeSheet(sheetId: string): void {
+    this._sheets = this._sheets.filter(sheet => sheet.id !== sheetId)
   }
 }
