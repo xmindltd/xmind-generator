@@ -94,7 +94,7 @@ Note: It is essential to know that `addTopic` method of a sheet can only use onc
 ```javascript
 const workbook = new Workbook();
 const sheet = workbook.addSheet('My Sheet');
-const topic = sheet.addTopic('Topic 1')
+const rootTopic = sheet.addRootTopic('Topic 1')
 
 // Specify properties
 topic.addNotes(['My Note', 'Another Note']);
@@ -103,12 +103,12 @@ topic.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue])
 
 // Also Use the second parameter of the addTopic method to specify properties for the topic easily.
 // For Example: Create a central topic with a text label and a note
-const topic = sheet.addTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'});
+const rootTopic = sheet.addRootTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'});
 ```
 
 **Fetch Root topic**
 ```javascript
-const centralTopic = sheet.topic
+const rootTopic = sheet.topic
 ```
 
 ## Remove Root Topic
