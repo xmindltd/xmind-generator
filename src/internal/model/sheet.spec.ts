@@ -24,3 +24,24 @@ describe('[internal/model/sheet] removeRootTopic()', () => {
     expect(sheet.rootTopic).toBeNull()
   })
 })
+
+describe('[internal/model/sheet] addRelationship()', () => {
+  it('should add a relationship from the sheet', () => {
+    const sheet = new Workbook().addSheet('Grill House')
+    sheet.addRelationship('Smoked Bacon', 'topic1-xxx-xxx', 'topic2-xxx-xxx')
+    expect(sheet.relationships).toHaveLength(1)
+    expect(sheet.relationships[0]?.startTopicId).toBe('topic1-xxx-xxx')
+  })
+})
+
+describe('[internal/model/sheet] addRelationship()', () => {
+  it('should remove a relationship from the sheet', () => {
+    const sheet = new Workbook().addSheet('Grill House')
+    sheet.addRelationship('Smoked Bacon', 'topic1-xxx-xxx', 'topic2-xxx-xxx')
+    expect(sheet.relationships).toHaveLength(1)
+    sheet.removeRelationship('invalid-id')
+    expect(sheet.relationships).toHaveLength(1)
+    sheet.removeRelationship('topic2-xxx-xxx')
+    expect(sheet.relationships).toHaveLength(0)
+  })
+})

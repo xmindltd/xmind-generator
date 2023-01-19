@@ -1,18 +1,26 @@
 import { uuid } from './common'
-import { Topic } from './topic'
+import { Topic, TopicId } from './topic'
+import { Relationship, RelationshipId } from './relationship'
 
+export type SheetId = string
 export class Sheet {
   readonly title: string
-  readonly id: string
+  readonly id: SheetId
   private _rootTopic: Topic | null = null
+  private _relationships: Relationship[]
 
   constructor(title: string) {
     this.id = uuid()
     this.title = title
+    this._relationships = []
   }
 
-  get rootTopic(): Topic | null {
+  get rootTopic(): Readonly<Topic | null> {
     return this._rootTopic
+  }
+
+  get relationships(): ReadonlyArray<Relationship> {
+    return this._relationships
   }
 
   public addRootTopic(title: string): Topic {
@@ -25,5 +33,20 @@ export class Sheet {
 
   public removeRootTopic(): void {
     this._rootTopic = null
+  }
+
+  public addRelationship(title: string, startTopicId: TopicId, endTopicId: TopicId): Relationship {
+    const relationship = new Relationship(title, startTopicId, endTopicId)
+    this._relationships.push(relationship)
+    return relationship
+  }
+
+  public removeRelationship(identifier: RelationshipId | TopicId): void {
+    this._relationships = this._relationships.filter(
+      relationship =>
+        relationship.id !== identifier &&
+        relationship.startTopicId !== identifier &&
+        relationship.endTopicId !== identifier
+    )
   }
 }

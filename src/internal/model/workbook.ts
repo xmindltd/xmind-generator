@@ -1,4 +1,4 @@
-import { Sheet } from './sheet'
+import { Sheet, SheetId } from './sheet'
 import { Topic } from './topic'
 
 export class Workbook {
@@ -23,11 +23,11 @@ export class Workbook {
     return sheet
   }
 
-  public getSheet(sheetId: string): Sheet | null {
+  public getSheet(sheetId: SheetId): Sheet | null {
     return this.sheets.find(sheet => sheet.id === sheetId) ?? null
   }
 
-  public removeSheet(sheetId: string): void {
+  public removeSheet(sheetId: SheetId): void {
     this._sheets = this._sheets.filter(sheet => sheet.id !== sheetId)
   }
 }
