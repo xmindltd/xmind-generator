@@ -15,7 +15,7 @@ const topic2 = rootTopic.addTopic('Starters');
 topic2.addNotes(['With free soft drink']);
 const subTopic3 = topic2.addTopic('Smoked Bacon');
 const subTopic4 = topic2.addTopic('Fried Chicken', {labels: ['Hot Chilli']});
- 
+
 topic1.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue]);
 
 workbook.sheets[0].addRelationship('', topic1.id, topic2.id);
@@ -153,17 +153,13 @@ const relationship = sheet.addRelationship('Relationship', topicFoo.id, topicBar
 **Access relationship**
 
 ```javascript
-// Fetch a relationship by topic Id
-const relationship = sheet.getRelationship(topicFoo.id); // topicBar.id is either supported
-
 // Access all relationships of sheet
 const relationships = sheet.relationships;
 relationships[0] // The first relationship object
 ```
-## Remove a relationship 
+## Remove a relationship
 ```javascript
 // remove a relationship by its id
-const relationship = sheet.getRelationship(topic.id);
 sheet.removeRelationship(relationship.id);
 
 // remove all relationships related to a topic
@@ -180,20 +176,17 @@ const endTopic = topic.addTopic('Subtopic 3');
 
 // create summary of above three three topics
 const summary = sheet.addSummary('My Summary', startTopic.id, endTopic.id);
-// Note: startTopic and endTopic must be sibling topics with a same parent Topic 
+// Note: startTopic and endTopic must be sibling topics with a same parent Topic
 ```
 **Access summary**
 
 ```javascript
-// Fetch a summary by topic's Id that is summarized
-const getSummary = sheet.getSummary(startTopic.id);
-
 // Access all summaries of sheet
 const summaries = sheet.summaries;
 summaries[0] // The first summary object
 ```
 
-## Remove a Summary 
+## Remove a Summary
 ```javascript
 // remove a summary by its id
 const summary = sheet.getSummary(topic.id);
