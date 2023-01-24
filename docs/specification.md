@@ -28,8 +28,8 @@ workbook.save(filepath);
 **There is also a faster way to build the same document**
 
 ```javascript
-const workbook = builder().root(
-    topic('Grill House').children([
+const workbook = builder().create([
+    rootTopic('Grill House').children([
         topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh, Marker.Flag.darkBlue]}).children([
             topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']})
             topic('Tomato Salad', { ref: 'topic:qux' })
@@ -44,7 +44,7 @@ const workbook = builder().root(
     ]).summaries([
         summary('Fresh and Delicious', { start: { ref: 'topic:baz' }, end: { ref: 'topic:qux' }})
     ])
-).build()
+]).build()
 ```
 
 
