@@ -6,13 +6,14 @@ export type SheetId = string
 export class Sheet {
   readonly title: string
   readonly id: SheetId
-  private _rootTopic: Topic | null = null
+  private _rootTopic: Topic | null
   private _relationships: Relationship[]
 
-  constructor(title: string) {
+  constructor(title?: string, rootTopic?: Topic, relationships?: Relationship[]) {
     this.id = uuid()
-    this.title = title
-    this._relationships = []
+    this.title = title ?? ''
+    this._rootTopic = rootTopic ?? null
+    this._relationships = relationships ?? []
   }
 
   get rootTopic(): Readonly<Topic | null> {

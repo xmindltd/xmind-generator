@@ -29,13 +29,13 @@ workbook.save(filepath);
 
 ```javascript
 const workbook = builder().create([
-    rootTopic('Grill House').children([
+    root('Grill House').children([
         topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh, Marker.Flag.darkBlue]}).children([
-            topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']})
+            topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']}),
             topic('Tomato Salad', { ref: 'topic:qux' })
         ]),
-        topic('Starters' { ref: 'topic:bar', note: ['With free soft drink']}).children([
-            topic('Smoked Bacon', { ref: 'topic:fred' })
+        topic('Starters', { ref: 'topic:bar', notes: ['With free soft drink']}).children([
+            topic('Smoked Bacon', { ref: 'topic:fred' }),
             topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli']})
         ]),
     ]).relationships([

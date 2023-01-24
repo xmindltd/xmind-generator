@@ -1,7 +1,7 @@
 import { uuid } from './common'
 
 export type TopicId = string
-export type TopicAttributes = { labels?: string[] }
+export type TopicAttributes = { labels?: string[]; notes?: string[] }
 export class Topic {
   readonly id: TopicId
   readonly title: string

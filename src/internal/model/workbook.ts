@@ -4,8 +4,8 @@ import { Topic } from './topic'
 export class Workbook {
   private _sheets: Sheet[]
 
-  constructor() {
-    this._sheets = []
+  constructor(sheets?: Sheet[]) {
+    this._sheets = sheets ?? []
   }
 
   get sheets(): ReadonlyArray<Sheet> {
