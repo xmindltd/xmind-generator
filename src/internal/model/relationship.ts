@@ -1,16 +1,17 @@
 import { uuid } from './common'
+import { TopicId } from './topic'
 
 export type RelationshipId = string
 export class Relationship {
   readonly id: RelationshipId
   readonly title: string
-  readonly startTopicId: string
-  readonly endTopicId: string
+  readonly fromTopicId: string
+  readonly toTopicId: string
 
-  constructor(title: string, startTopicId: string, endTopicId: string) {
+  constructor(title: string, fromTopicId: TopicId, toTopicId: TopicId) {
     this.id = uuid()
     this.title = title
-    this.startTopicId = startTopicId
-    this.endTopicId = endTopicId
+    this.fromTopicId = fromTopicId
+    this.toTopicId = toTopicId
   }
 }

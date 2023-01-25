@@ -42,3 +42,14 @@ describe('[internal/model/workbook] getSheet()', () => {
     expect(workbook.getSheet(sheet.id)).toBeNull()
   })
 })
+
+describe('[internal/model/workbook] query()', () => {
+  it('should return proper topic', () => {
+    const workbook = new Workbook()
+    const sheet = workbook.addSheet('Grill House')
+    const rootTopic = sheet.addRootTopic('Fried Chicken')
+    const childTopic = rootTopic.addTopic('Apple juice')
+    expect(sheet?.query?.(rootTopic.id)).toBe(rootTopic)
+    expect(sheet?.query?.(childTopic.id)).toBe(childTopic)
+  })
+})

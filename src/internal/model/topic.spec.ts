@@ -19,3 +19,16 @@ describe('[internal/model/topic] addTopic()/removeTopic()', () => {
     expect(topic?.children[0]).toBeUndefined()
   })
 })
+
+describe('[internal/model/topic] query()', () => {
+  it('should return proper topic', () => {
+    const parentTopic = new Topic('Smoked Bacon')
+    const childTopic = parentTopic.addTopic('Fried Chicken')
+    expect(parentTopic?.query?.(parentTopic.id)).toBe(parentTopic)
+    expect(parentTopic?.query?.(childTopic.id)).toBe(childTopic)
+  })
+  it('should return null', () => {
+    const topic = new Topic('Smoked Bacon')
+    expect(topic?.query?.('test')).toBeNull()
+  })
+})

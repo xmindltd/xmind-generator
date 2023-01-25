@@ -24,6 +24,10 @@ export class Sheet {
     return this._relationships
   }
 
+  public query(topicId: TopicId): Topic | null {
+    return this._rootTopic?.query(topicId) ?? null
+  }
+
   public addRootTopic(title: string): Topic {
     if (this._rootTopic) {
       throw new Error('Duplicated root topic creation')
@@ -46,8 +50,8 @@ export class Sheet {
     this._relationships = this._relationships.filter(
       relationship =>
         relationship.id !== identifier &&
-        relationship.startTopicId !== identifier &&
-        relationship.endTopicId !== identifier
+        relationship.fromTopicId !== identifier &&
+        relationship.toTopicId !== identifier
     )
   }
 }

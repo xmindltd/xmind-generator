@@ -16,7 +16,7 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
     summaries: () => sheetBuilder,
     build: () => {
       const { topic: rootTopic, refs = {} } = rootTopicBuilder?.build() ?? {}
-      const query = (ref: string) => {
+      const fetch = (ref: string) => {
         if (typeof refs[ref] === 'undefined') {
           throw new Error(`Missing Ref "${ref}"`)
         }
@@ -24,7 +24,7 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       }
       const sheet = new Sheet(title, rootTopic)
       RelationshipInfos.forEach(({ title, startTopicRef, endTopicRef }) => {
-        sheet.addRelationship(title, query(startTopicRef).id, query(endTopicRef).id)
+        sheet.addRelationship(title, fetch(startTopicRef).id, fetch(endTopicRef).id)
       })
       return sheet
     }

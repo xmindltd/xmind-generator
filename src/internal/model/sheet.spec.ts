@@ -30,7 +30,7 @@ describe('[internal/model/sheet] addRelationship()', () => {
     const sheet = new Workbook().addSheet('Grill House')
     sheet.addRelationship('Smoked Bacon', 'topic1-xxx-xxx', 'topic2-xxx-xxx')
     expect(sheet.relationships).toHaveLength(1)
-    expect(sheet.relationships[0]?.startTopicId).toBe('topic1-xxx-xxx')
+    expect(sheet.relationships[0]?.fromTopicId).toBe('topic1-xxx-xxx')
   })
 })
 
@@ -43,5 +43,15 @@ describe('[internal/model/sheet] addRelationship()', () => {
     expect(sheet.relationships).toHaveLength(1)
     sheet.removeRelationship('topic2-xxx-xxx')
     expect(sheet.relationships).toHaveLength(0)
+  })
+})
+
+describe('[internal/model/sheet] query()', () => {
+  it('should return proper topic', () => {
+    const sheet = new Workbook().addSheet('Grill House')
+    const rootTopic = sheet.addRootTopic('Fried Chicken')
+    const childTopic = rootTopic.addTopic('Apple juice')
+    expect(sheet?.query?.(rootTopic.id)).toBe(rootTopic)
+    expect(sheet?.query?.(childTopic.id)).toBe(childTopic)
   })
 })

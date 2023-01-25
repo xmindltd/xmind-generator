@@ -1,7 +1,7 @@
 import { uuid } from './common'
 
 export type TopicId = string
-export type TopicAttributes = { labels?: string[]; notes?: string[] }
+export type TopicAttributes = { labels?: string[]; note?: string }
 export class Topic {
   readonly id: TopicId
   readonly title: string
@@ -17,6 +17,14 @@ export class Topic {
 
   get children(): ReadonlyArray<Topic> {
     return this._children
+  }
+
+  public query(topicId: TopicId): Topic | null {
+    if (topicId === this.id) {
+      return this
+    } else {
+      return this._children.find(child => child.query(topicId) !== null) ?? null
+    }
   }
 
   public addTopic(title: string, attributes?: TopicAttributes): Topic {

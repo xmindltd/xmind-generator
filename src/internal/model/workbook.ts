@@ -1,5 +1,5 @@
 import { Sheet, SheetId } from './sheet'
-import { Topic } from './topic'
+import { Topic, TopicId } from './topic'
 
 export class Workbook {
   private _sheets: Sheet[]
@@ -10,6 +10,16 @@ export class Workbook {
 
   get sheets(): ReadonlyArray<Sheet> {
     return this._sheets
+  }
+
+  public query(topicId: TopicId): Topic | null {
+    for (const sheet of this._sheets) {
+      const result = sheet.query(topicId)
+      if (result) {
+        return result
+      }
+    }
+    return null
   }
 
   public createRoot(title: string): Topic {

@@ -18,7 +18,7 @@ describe('[builder] *', () => {
               }),
               topic('Tomato Salad', { ref: 'topic:qux' })
             ]),
-            topic('Starters', { ref: 'topic:bar', notes: ['With free soft drink'] }).children([
+            topic('Starters', { ref: 'topic:bar', note: 'With free soft drink' }).children([
               topic('Smoked Bacon', { ref: 'topic:fred' }),
               topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli'] })
             ])
@@ -63,7 +63,7 @@ describe('[builder] *', () => {
     const childTopics = workbook?.sheets?.[0]?.rootTopic?.children
     expect(workbook?.sheets?.[0]?.relationships).length(2)
     expect(workbook?.sheets?.[0]?.relationships?.[1].title).toBe('Special')
-    expect(workbook?.sheets?.[0]?.relationships?.[0].startTopicId).toBe(childTopics?.[0].id)
-    expect(workbook?.sheets?.[0]?.relationships?.[0].endTopicId).toBe(childTopics?.[1].id)
+    expect(workbook?.sheets?.[0]?.relationships?.[0].fromTopicId).toBe(childTopics?.[0].id)
+    expect(workbook?.sheets?.[0]?.relationships?.[0].toTopicId).toBe(childTopics?.[1].id)
   })
 })
