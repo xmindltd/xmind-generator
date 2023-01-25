@@ -176,7 +176,7 @@ const endTopic = topic.addTopic('Subtopic 3');
 
 // create summary of above three three topics
 const summary = sheet.addSummary('My Summary', startTopic.id, endTopic.id);
-// Note: startTopic and endTopic must be sibling topics with a same parent Topic
+// Note: startTopic and endTopic must be sibling topics with a same parent Topic, otherwise such rule is abandoned.
 ```
 **Access summary**
 
