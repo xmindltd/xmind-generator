@@ -27,7 +27,8 @@ export function root(title: string, attributes?: TopicBuilderAttributes): RootBu
       return sheetBuilder
     },
     relationships: sheetBuilder.relationships,
-    summaries: sheetBuilder.summaries
+    summaries: sheetBuilder.summaries,
+    build: sheetBuilder.build
   }
 }
 export function builder() {
@@ -51,10 +52,10 @@ export interface SheetBuilder {
   summaries: () => SheetBuilder // TODO: summary builder
   build: () => Sheet
 }
-export interface RootBuilder extends Omit<SheetBuilder, 'rootTopic' | 'build'> {
+export interface RootBuilder extends Omit<SheetBuilder, 'rootTopic'> {
   children: (topicBuilders: ReadonlyArray<TopicBuilder>) => SheetBuilder
 }
 export interface WorkbookBuilder {
-  create: (sheetBuilders: ReadonlyArray<SheetBuilder>) => WorkbookBuilder
+  create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => WorkbookBuilder
   build: () => Workbook
 }

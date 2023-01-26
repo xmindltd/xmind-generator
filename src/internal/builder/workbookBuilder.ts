@@ -1,11 +1,11 @@
-import { SheetBuilder, WorkbookBuilder } from '../../builder'
+import { RootBuilder, SheetBuilder, WorkbookBuilder } from '../../builder'
 import { Workbook } from '../model/workbook'
 
 export function makeWorkbookBuilder(): WorkbookBuilder {
-  const childBuilders: Array<SheetBuilder> = []
+  const childBuilders: Array<SheetBuilder | RootBuilder> = []
   const workbookBuilder = {
-    create: (sheetBuilders: ReadonlyArray<SheetBuilder>) => {
-      childBuilders.push(...sheetBuilders)
+    create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => {
+      childBuilders.push(...builders)
       return workbookBuilder
     },
     build: () => {

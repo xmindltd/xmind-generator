@@ -1,10 +1,15 @@
 import { Relationship } from './model/relationship'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
+import { Workbook } from './model/workbook'
 
 export type SerializedObject = Record<string, unknown>
 
-export function serializeSheet(sheet: Sheet): SerializedObject {
+export function serializeWorkbook(workbook: Workbook): ReadonlyArray<SerializedObject> {
+  return workbook.sheets.map(sheet => serializeSheet(sheet))
+}
+
+export function serializeSheet(sheet: Sheet): Readonly<SerializedObject> {
   const obj: SerializedObject = { id: sheet.id, class: 'sheet', title: sheet.title ?? '' }
   if (sheet.rootTopic) {
     obj.rootTopic = serializeTopic(sheet.rootTopic)
@@ -15,7 +20,7 @@ export function serializeSheet(sheet: Sheet): SerializedObject {
   return obj
 }
 
-export function serializeTopic(topic: Topic | Readonly<Topic>): SerializedObject {
+export function serializeTopic(topic: Topic | Readonly<Topic>): Readonly<SerializedObject> {
   const obj: SerializedObject = { id: topic.id, class: 'topic', title: topic.title ?? '' }
   const { note, labels } = topic.attributes
 
@@ -38,7 +43,7 @@ export function serializeTopic(topic: Topic | Readonly<Topic>): SerializedObject
   return obj
 }
 
-export function serializeRelationship(relationship: Relationship): SerializedObject {
+export function serializeRelationship(relationship: Relationship): Readonly<SerializedObject> {
   return {
     id: relationship.id,
     class: 'relationship',
