@@ -1,0 +1,23 @@
+{
+  "name": "xmind-generator",
+  "version": "0.0.0",
+  "main": "./src/index.js",
+  "repository": "https://github.com/xmindltd/xmind-generator.git",
+  "author": "Xmind Ltd.",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn prettier && rm -rf lib && tsc --build",
+    "test": "vitest",
+    "prettier": "prettier --write \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "prettier": "^2.8.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.4",
+    "vitest": "^0.27.1"
+  },
+  "dependencies": {
+    "jszip": "3.10.1"
+  }
+}
