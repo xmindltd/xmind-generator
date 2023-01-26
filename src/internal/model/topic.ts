@@ -1,7 +1,9 @@
 import { uuid } from './common'
 
 export type TopicId = string
-export type TopicAttributes = { labels?: string[]; note?: string }
+export type TopicImageData = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
+export type TopicAttributes = { labels?: string[]; note?: string; image?: TopicImageData | null }
+
 export class Topic {
   readonly id: TopicId
   readonly title: string
@@ -33,7 +35,15 @@ export class Topic {
     return childTopic
   }
 
-  public removeTopic(topicId: TopicId) {
+  public removeTopic(topicId: TopicId): void {
     this._children = this._children.filter(child => child.id !== topicId)
+  }
+
+  public addImage(imageData: TopicImageData): void {
+    this.attributes.image = imageData
+  }
+
+  public removeImage(): void {
+    this.attributes.image = null
   }
 }
