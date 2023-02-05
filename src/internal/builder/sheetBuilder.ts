@@ -3,30 +3,21 @@ import { RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
 
 export function makeSheetBuilder(title?: string): SheetBuilder {
   let rootTopicBuilder: TopicBuilder
-  const RelationshipInfos: RelationshipInfo[] = []
+  const relationshipInfos: RelationshipInfo[] = []
   return {
     rootTopic(topicBuilder: TopicBuilder) {
       rootTopicBuilder = topicBuilder
       return this
     },
     relationships(relationships: ReadonlyArray<RelationshipInfo>) {
-      RelationshipInfos.push(...relationships)
-      return this
-    },
-    summaries() {
+      relationshipInfos.push(...relationships)
       return this
     },
     build() {
-      const { topic: rootTopic, refs = {} } = rootTopicBuilder?.build() ?? {}
-      const fetch = (ref: string) => {
-        if (typeof refs[ref] === 'undefined') {
-          throw new Error(`Missing Ref "${ref}"`)
-        }
-        return refs[ref]
-      }
+      const { topic: rootTopic, reference } = rootTopicBuilder?.build() ?? {}
       const sheet = new Sheet(title, rootTopic)
-      RelationshipInfos.forEach(({ title, startTopicRef, endTopicRef }) => {
-        sheet.addRelationship(title, fetch(startTopicRef).id, fetch(endTopicRef).id)
+      relationshipInfos.forEach(({ title, fromRef, toRef }) => {
+        sheet.addRelationship(title, reference.fetch(fromRef).id, reference.fetch(toRef).id)
       })
       return sheet
     }

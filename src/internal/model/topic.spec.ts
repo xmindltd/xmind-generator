@@ -46,7 +46,7 @@ describe('[internal/model/topic] addMaker()', () => {
     const topic = new Topic('Smoked Bacon')
     topic.addMarker(Marker.People.blue)
     expect(() => topic.addMarker(Marker.People.gray)).toThrowError(
-      `Markers in same group is not allowed: ${Marker.People.gray.id}`
+      'Marker creation with same group is not allowed'
     )
   })
 })
@@ -57,5 +57,16 @@ describe('[internal/model/topic] removeMarker()', () => {
     topic.addMarker(Marker.Month.jan)
     topic.removeMarker(Marker.Month.jan)
     expect(topic.markers[0]).toBeUndefined()
+  })
+})
+
+describe('[internal/model/topic] addSummary()', () => {
+  it('should add a summary attach to topic', () => {
+    const topic = new Topic('Smoked Bacon')
+    const childTopicFoo = topic.addTopic('ice')
+    const childTopicBar = topic.addTopic('fire')
+    const summary = topic.addSummary('summary', childTopicBar.id, childTopicFoo.id)
+    expect(summary.title).toBe('summary')
+    expect(topic.summaries?.[0]).toBe(summary)
   })
 })

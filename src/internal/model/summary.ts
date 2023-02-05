@@ -15,4 +15,10 @@ export class Summary {
     this.startTopicId = startTopicId
     this.endTopicId = endTopicId
   }
+
+  public isEqualTo(SummaryToCompare: Summary) {
+    return [this.startTopicId, this.endTopicId].every(
+      id => SummaryToCompare.startTopicId === id || SummaryToCompare.endTopicId === id
+    )
+  }
 }
