@@ -1,24 +1,52 @@
 import { uuid } from './common'
+import { MarkerId } from '../marker'
 
 export type TopicId = string
 export type TopicImageData = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
-export type TopicAttributes = { labels?: string[]; note?: string; image?: TopicImageData | null }
+export type TopicAttributes = {
+  labels?: string[]
+  note?: string
+  image?: TopicImageData | null
+  markers?: MarkerId[]
+}
 
 export class Topic {
   readonly id: TopicId
   readonly title: string
-  readonly attributes: TopicAttributes
   private _children: Topic[]
+  private _markers: MarkerId[]
+  private _labels: string[]
+  private _image: TopicImageData | null
+  private _note: string | null
 
   constructor(title: string, attributes?: TopicAttributes, children?: Topic[]) {
     this.id = uuid()
     this.title = title
-    this.attributes = attributes ?? {}
     this._children = children ?? []
+    this._image = attributes?.image ?? null
+    this._labels = attributes?.labels ?? []
+    this._markers = attributes?.markers ?? []
+    this._note = attributes?.note ?? null
   }
 
   get children(): ReadonlyArray<Topic> {
     return this._children
+  }
+
+  get labels(): ReadonlyArray<string> {
+    return this._labels
+  }
+
+  get note(): Readonly<string | null> {
+    return this._note
+  }
+
+  get markers(): ReadonlyArray<MarkerId> {
+    return this._markers
+  }
+
+  get image(): Readonly<TopicImageData | null> {
+    return this._image
   }
 
   public query(topicId: TopicId): Topic | null {
@@ -40,10 +68,21 @@ export class Topic {
   }
 
   public addImage(imageData: TopicImageData): void {
-    this.attributes.image = imageData
+    this._image = imageData
   }
 
   public removeImage(): void {
-    this.attributes.image = null
+    this._image = null
+  }
+
+  public addMarker(markerId: MarkerId): void {
+    if (this._markers.find(id => id.isSameGroup(markerId))) {
+      throw new Error(`Markers in same group is not allowed: ${markerId.id}`)
+    }
+    this._markers.push(markerId)
+  }
+
+  public removeMarker(markerId: MarkerId): void {
+    this._markers = this._markers.filter(m => m.id !== markerId.id)
   }
 }

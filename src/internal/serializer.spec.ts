@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { root, builder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
+import { Marker } from './marker'
 import { serializeSheet, serializeTopic, serializeWorkbook } from './serializer'
 import { makeImageResourceStorage } from './storage'
 
@@ -29,9 +30,10 @@ describe('[serializer] serializeSheet', () => {
 
 describe('[serializer] serializeTopic', () => {
   it('should serialize a topic', () => {
-    const topic = new Topic('topic', { labels: ['this is a label'] })
+    const topic = new Topic('topic', { labels: ['this is a label'], markers: [Marker.Smiley.cry] })
     const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set) as any
     expect(serializedTopic).toBeDefined()
     expect(serializedTopic?.labels).includes('this is a label')
+    expect(serializedTopic?.markers?.[0]?.markerId).toBe(Marker.Smiley.cry.id)
   })
 })

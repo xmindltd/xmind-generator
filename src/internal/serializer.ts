@@ -33,7 +33,7 @@ export function serializeTopic(
   imageResourceSetter: (imageData: TopicImageData) => string | null
 ): Readonly<SerializedObject> {
   const obj: SerializedObject = { id: topic.id, class: 'topic', title: topic.title ?? '' }
-  const { note, labels, image } = topic.attributes
+  const { note, labels, image, markers } = topic
 
   if (note) {
     obj.notes = {
@@ -41,7 +41,7 @@ export function serializeTopic(
     }
   }
 
-  if (labels) {
+  if (labels.length > 0) {
     obj.labels = labels
   }
 
@@ -58,6 +58,10 @@ export function serializeTopic(
         src: resourceIdPrefix + resourcePath
       }
     }
+  }
+
+  if (markers.length > 0) {
+    obj.markers = markers.map(marker => ({ markerId: marker.id }))
   }
 
   return obj
