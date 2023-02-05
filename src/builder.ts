@@ -43,12 +43,12 @@ export type RelationshipInfo = {
 }
 
 export interface TopicBuilder {
-  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => TopicBuilder
+  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => this
   build: () => { topic: Topic; refs: Record<string, Topic> }
 }
 export interface SheetBuilder {
-  rootTopic: (topicBuilder: TopicBuilder) => SheetBuilder
-  relationships: (relationships: ReadonlyArray<RelationshipInfo>) => SheetBuilder // TODO: relationship builder
+  rootTopic: (topicBuilder: TopicBuilder) => this
+  relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
   summaries: () => SheetBuilder // TODO: summary builder
   build: () => Sheet
 }
@@ -56,6 +56,6 @@ export interface RootBuilder extends Omit<SheetBuilder, 'rootTopic'> {
   children: (topicBuilders: ReadonlyArray<TopicBuilder>) => SheetBuilder
 }
 export interface WorkbookBuilder {
-  create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => WorkbookBuilder
+  create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => this
   build: () => Workbook
 }
