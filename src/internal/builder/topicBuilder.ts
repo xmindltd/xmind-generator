@@ -3,12 +3,12 @@ import { TopicBuilder, TopicBuilderAttributes } from '../../builder'
 
 export function makeTopicBuilder(title: string, attributes?: TopicBuilderAttributes): TopicBuilder {
   const childBuilders: Array<TopicBuilder> = []
-  const topicBuilder = {
-    children: (builders: ReadonlyArray<TopicBuilder>) => {
+  return {
+    children(builders: ReadonlyArray<TopicBuilder>) {
       childBuilders.push(...builders)
-      return topicBuilder
+      return this
     },
-    build: () => {
+    build() {
       const childTopics: Topic[] = []
       let childRefs: Record<string, Topic> = {}
       childBuilders.forEach(builder => {
@@ -23,5 +23,4 @@ export function makeTopicBuilder(title: string, attributes?: TopicBuilderAttribu
       return { topic, refs }
     }
   }
-  return topicBuilder
 }

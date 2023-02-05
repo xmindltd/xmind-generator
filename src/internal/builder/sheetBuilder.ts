@@ -4,17 +4,19 @@ import { RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
 export function makeSheetBuilder(title?: string): SheetBuilder {
   let rootTopicBuilder: TopicBuilder
   const RelationshipInfos: RelationshipInfo[] = []
-  const sheetBuilder = {
-    rootTopic: (topicBuilder: TopicBuilder) => {
+  return {
+    rootTopic(topicBuilder: TopicBuilder) {
       rootTopicBuilder = topicBuilder
-      return sheetBuilder
+      return this
     },
-    relationships: (relationships: ReadonlyArray<RelationshipInfo>) => {
+    relationships(relationships: ReadonlyArray<RelationshipInfo>) {
       RelationshipInfos.push(...relationships)
-      return sheetBuilder
+      return this
     },
-    summaries: () => sheetBuilder,
-    build: () => {
+    summaries() {
+      return this
+    },
+    build() {
       const { topic: rootTopic, refs = {} } = rootTopicBuilder?.build() ?? {}
       const fetch = (ref: string) => {
         if (typeof refs[ref] === 'undefined') {
@@ -29,5 +31,4 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       return sheet
     }
   }
-  return sheetBuilder
 }
