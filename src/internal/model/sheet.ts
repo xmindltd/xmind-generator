@@ -1,4 +1,4 @@
-import { uuid } from './common'
+import { uuid } from '../common'
 import { Topic, TopicId } from './topic'
 import { Relationship, RelationshipId } from './relationship'
 
@@ -9,11 +9,11 @@ export class Sheet {
   private _rootTopic: Topic | null
   private _relationships: Relationship[]
 
-  constructor(title?: string, rootTopic?: Topic, relationships?: Relationship[]) {
+  constructor(title?: string, rootTopic?: Topic) {
     this.id = uuid()
     this.title = title ?? ''
     this._rootTopic = rootTopic ?? null
-    this._relationships = relationships ?? []
+    this._relationships = []
   }
 
   get rootTopic(): Readonly<Topic | null> {

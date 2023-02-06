@@ -1,5 +1,5 @@
 import { TopicImageData } from './model/topic'
-import { uuid } from './model/common'
+import { uuid } from './common'
 
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
 

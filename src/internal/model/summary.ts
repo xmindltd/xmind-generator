@@ -1,5 +1,5 @@
 // Summary class model
-import { uuid } from './common'
+import { uuid } from '../common'
 import { TopicId } from './topic'
 
 export type SummaryId = string

@@ -1,4 +1,4 @@
-import { uuid } from './common'
+import { uuid } from '../common'
 import { MarkerId } from '../marker'
 import { Summary, SummaryId } from './summary'
 
@@ -21,16 +21,11 @@ export class Topic {
   private _image: TopicImageData | null
   private _note: string | null
 
-  constructor(
-    title: string,
-    attributes?: TopicAttributes,
-    children?: Topic[],
-    summaries?: Summary[]
-  ) {
+  constructor(title: string, attributes?: TopicAttributes, children?: Topic[]) {
     this.id = uuid()
     this.title = title
     this._children = children ?? []
-    this._summaries = summaries ?? []
+    this._summaries = []
     this._image = attributes?.image ?? null
     this._labels = attributes?.labels ?? []
     this._markers = attributes?.markers ?? []
