@@ -2,17 +2,17 @@
 
 
 ## Contents
----
+
 - [Install](#Install)
 - [Usage](#usage)
 - [Interface](#interface)
 - [License](#license)
 
 ## Install
----
+
 This is install information
 ## Usage
----
+
 **Building document**
 ```javascript
 const workbook = new Workbook();
@@ -72,7 +72,7 @@ helper.saveLocal(document, '...path to an exist directory')
 
 
 ## Interface
----
+
 ### Create a Xmind Workbook
 
 The workbook is a temporary storage where all the data are written.
@@ -207,7 +207,7 @@ topic.removeSummary(childTopic.id)
 ```
 
 ## License
----
+
 [MIT © Xmind LTD](../LICENSE)
 
 
