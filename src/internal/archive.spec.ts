@@ -51,4 +51,3 @@ describe('[archive] archive workbook', () => {
     expect(Object.keys(fileEntries)[0]).toMatch(/resources/)
   })
 })
-

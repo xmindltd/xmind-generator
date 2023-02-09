@@ -11,7 +11,7 @@ export async function archive(workbook: Workbook) {
   const content = JSON.stringify(serializedWorkbook)
   zip.file('content.json', content)
 
-  const metadata = asJSONObject({ creator: { name: 'xmind-generator' }})
+  const metadata = asJSONObject({ creator: { name: 'xmind-generator' } })
   zip.file('metadata.json', JSON.stringify(metadata))
 
   const resources = zip.folder('resources')
@@ -21,12 +21,16 @@ export async function archive(workbook: Workbook) {
     resourcePaths.push(`resources/${path}`)
   }
 
-  zip.file('manifest.json', JSON.stringify({ 'file-entries': {
-    'content.json': {},
-    'metadata.json': {},
-    ...Object.fromEntries(new Map(resourcePaths.map((path) => [path, {}])))
-  }}))
+  zip.file(
+    'manifest.json',
+    JSON.stringify({
+      'file-entries': {
+        'content.json': {},
+        'metadata.json': {},
+        ...Object.fromEntries(new Map(resourcePaths.map(path => [path, {}])))
+      }
+    })
+  )
 
   return await zip.generateAsync({ type: 'base64' })
 }
-
