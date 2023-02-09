@@ -1,5 +1,6 @@
-import { uuid } from './common'
+import { uuid } from '../common'
 import { MarkerId } from '../marker'
+import { Summary, SummaryId } from './summary'
 
 export type TopicId = string
 export type TopicImageData = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
@@ -14,6 +15,7 @@ export class Topic {
   readonly id: TopicId
   readonly title: string
   private _children: Topic[]
+  private _summaries: Summary[]
   private _markers: MarkerId[]
   private _labels: string[]
   private _image: TopicImageData | null
@@ -23,6 +25,7 @@ export class Topic {
     this.id = uuid()
     this.title = title
     this._children = children ?? []
+    this._summaries = []
     this._image = attributes?.image ?? null
     this._labels = attributes?.labels ?? []
     this._markers = attributes?.markers ?? []
@@ -31,6 +34,10 @@ export class Topic {
 
   get children(): ReadonlyArray<Topic> {
     return this._children
+  }
+
+  get summaries(): ReadonlyArray<Summary> {
+    return this._summaries
   }
 
   get labels(): ReadonlyArray<string> {
@@ -77,12 +84,31 @@ export class Topic {
 
   public addMarker(markerId: MarkerId): void {
     if (this._markers.find(id => id.isSameGroup(markerId))) {
-      throw new Error(`Markers in same group is not allowed: ${markerId.id}`)
+      throw new Error('Marker creation with same group is not allowed')
     }
     this._markers.push(markerId)
   }
 
   public removeMarker(markerId: MarkerId): void {
     this._markers = this._markers.filter(m => m.id !== markerId.id)
+  }
+
+  public addSummary(title: string, startTopicId: TopicId, endTopicId: TopicId): Summary {
+    const summaryToAdd = new Summary(title, startTopicId, endTopicId)
+    const summaryFound = this._summaries.find(summary => summary.isEqualTo(summaryToAdd))
+    if (summaryFound) {
+      return summaryFound
+    }
+    this._summaries.push(summaryToAdd)
+    return summaryToAdd
+  }
+
+  public removeSummary(identifier: SummaryId | TopicId) {
+    this._summaries = this._summaries.filter(
+      summary =>
+        summary.id !== identifier &&
+        summary.endTopicId !== identifier &&
+        summary.startTopicId !== identifier
+    )
   }
 }

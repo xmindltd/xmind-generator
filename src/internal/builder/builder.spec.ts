@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { topic, root, sheet, builder, relationship } from '../../builder'
+import { topic, root, sheet, builder, relationship, summary } from '../../builder'
 import { Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
 
@@ -26,6 +26,12 @@ describe('[builder] *', () => {
           .relationships([
             relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
             relationship('Special', { from: { ref: 'topic:fred' }, to: { ref: 'topic:thud' } })
+          ])
+          .summaries([
+            summary('Fresh and Delicious', {
+              start: { ref: 'topic:foo' },
+              end: { ref: 'topic:bar' }
+            })
           ])
       ])
       .build()
@@ -65,5 +71,12 @@ describe('[builder] *', () => {
     expect(workbook?.sheets?.[0]?.relationships?.[1].title).toBe('Special')
     expect(workbook?.sheets?.[0]?.relationships?.[0].fromTopicId).toBe(childTopics?.[0].id)
     expect(workbook?.sheets?.[0]?.relationships?.[0].toTopicId).toBe(childTopics?.[1].id)
+  })
+  it('should create a summary for root topic', () => {
+    const rootTopic = workbook?.sheets?.[0]?.rootTopic
+    expect(rootTopic?.summaries).length(1)
+    expect(rootTopic?.summaries?.[0]?.title).toBe('Fresh and Delicious')
+    expect(rootTopic?.summaries?.[0]?.startTopicId).toBe(rootTopic?.children?.[0]?.id)
+    expect(rootTopic?.summaries?.[0]?.endTopicId).toBe(rootTopic?.children?.[1]?.id)
   })
 })

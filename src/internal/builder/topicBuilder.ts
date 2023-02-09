@@ -1,26 +1,38 @@
 import { Topic } from '../model/topic'
-import { TopicBuilder, TopicBuilderAttributes } from '../../builder'
+import { SummaryInfo, TopicBuilder, TopicBuilderAttributes } from '../../builder'
+import { makeReference, mergeReferences, Reference } from './ref'
 
 export function makeTopicBuilder(title: string, attributes?: TopicBuilderAttributes): TopicBuilder {
   const childBuilders: Array<TopicBuilder> = []
+  const summaryInfos: Array<SummaryInfo> = []
   return {
     children(builders: ReadonlyArray<TopicBuilder>) {
       childBuilders.push(...builders)
       return this
     },
+    summaries(summaries: ReadonlyArray<SummaryInfo>) {
+      summaryInfos.push(...summaries)
+      return this
+    },
     build() {
       const childTopics: Topic[] = []
-      let childRefs: Record<string, Topic> = {}
+      const childReferences: Reference<Topic>[] = []
       childBuilders.forEach(builder => {
-        const { topic, refs } = builder.build()
+        const { topic, reference } = builder.build()
         childTopics.push(topic)
-        childRefs = { ...childRefs, ...refs }
+        childReferences.push(reference)
       })
+
       const topic = new Topic(title, attributes, childTopics)
-      const refs: Record<string, Topic> = attributes?.ref
-        ? { [attributes.ref]: topic, ...childRefs }
-        : childRefs
-      return { topic, refs }
+      const reference = mergeReferences([
+        makeReference<Topic>(attributes?.ref ? { [attributes.ref]: topic } : {}),
+        ...childReferences
+      ])
+      summaryInfos.forEach(({ title, startRef, endRef }) => {
+        topic.addSummary(title, reference.fetch(startRef).id, reference.fetch(endRef).id)
+      })
+
+      return { topic, reference }
     }
   }
 }

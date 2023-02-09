@@ -1,5 +1,5 @@
 // Summary class model
-import { uuid } from './common'
+import { uuid } from '../common'
 import { TopicId } from './topic'
 
 export type SummaryId = string
@@ -14,5 +14,11 @@ export class Summary {
     this.title = title
     this.startTopicId = startTopicId
     this.endTopicId = endTopicId
+  }
+
+  public isEqualTo(SummaryToCompare: Summary) {
+    return [this.startTopicId, this.endTopicId].every(
+      id => SummaryToCompare.startTopicId === id || SummaryToCompare.endTopicId === id
+    )
   }
 }

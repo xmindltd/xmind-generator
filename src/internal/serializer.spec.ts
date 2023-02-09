@@ -22,7 +22,7 @@ describe('[serializer] serializeWorkbook', () => {
 describe('[serializer] serializeSheet', () => {
   it('should serialize a sheet', () => {
     const sheet = new Sheet('sheet')
-    const serializedSheet = serializeSheet(sheet, makeImageResourceStorage().set) as any
+    const serializedSheet = serializeSheet(sheet, makeImageResourceStorage().set)
     expect(serializedSheet).toBeDefined()
     expect(serializedSheet.title).toBe('sheet')
   })
@@ -31,9 +31,22 @@ describe('[serializer] serializeSheet', () => {
 describe('[serializer] serializeTopic', () => {
   it('should serialize a topic', () => {
     const topic = new Topic('topic', { labels: ['this is a label'], markers: [Marker.Smiley.cry] })
-    const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set) as any
+    const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set)
     expect(serializedTopic).toBeDefined()
     expect(serializedTopic?.labels).includes('this is a label')
     expect(serializedTopic?.markers?.[0]?.markerId).toBe(Marker.Smiley.cry.id)
+  })
+})
+
+describe('[serializer] serializeTopic > serializeSummary', () => {
+  it('should serialize a topic summary correctly', () => {
+    const topic = new Topic('root')
+    const childTopic1 = topic.addTopic('child1')
+    const childTopic2 = topic.addTopic('child2')
+    topic.addSummary('summary', childTopic1.id, childTopic2.id)
+    const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set)
+    expect(serializedTopic).toBeDefined()
+    expect(serializedTopic?.summaries?.[0]?.range).toBe('(0,1)')
+    expect((serializedTopic?.children as any).summary[0].title).toBe('summary')
   })
 })

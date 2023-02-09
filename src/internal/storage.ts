@@ -1,5 +1,5 @@
 import { TopicImageData } from './model/topic'
-import { uuid } from './model/common'
+import { uuid } from './common'
 
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
 
@@ -24,7 +24,7 @@ export function makeImageResourceStorage(): ImageResourceStorageHandler {
       if (!imageType) {
         return null
       }
-      const resourcePath = `${uuid}.${imageTypeFromData(data)}`
+      const resourcePath = `${uuid()}.${imageTypeFromData(data)}`
       resourceStorage[resourcePath] = data
       return resourcePath
     },
