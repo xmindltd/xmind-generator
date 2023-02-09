@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { topic, root, sheet, builder, relationship, summary } from '../../builder'
+import { Marker } from '../marker'
 import { Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
 
@@ -11,7 +12,7 @@ describe('[builder] *', () => {
       .create([
         root('Grill House', { ref: 'topic:inf' })
           .children([
-            topic('Salad', { ref: 'topic:foo' }).children([
+            topic('Salad', { ref: 'topic:foo', markers: [Marker.Arrow.refresh] }).children([
               topic('Garden Salad', {
                 ref: 'topic:baz',
                 labels: ['Lemon Vinaigrette', 'Ginger Dressing']

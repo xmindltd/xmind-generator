@@ -19,7 +19,9 @@ This is install information
 ## Usage
 
 **Building document**
+
 After you initialize a Workbook instance, you can operate directly on sheets and topics in order to create a new xmind document
+
 ```javascript
 const workbook = new Workbook();
 // If you create a single sheet workbook, you can use `createRoot` method of `workbook`,
@@ -29,11 +31,11 @@ const rootTopic = workbook.createRoot('Grill House');
 const topic1 = rootTopic.addTopic('Salad');
 const subTopic1 = topic1.addTopic('Garden Salad', {labels: ['Lemon Vinaigrette', 'Ginger Dressing']});
 const subTopic2 = topic1.addTopic('Tomato Salad');
-topic1.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue]);
+topic1.addMarker(Marker.Arrow.refresh);
 topic1.addSummary('Get 10% off', subTopic1.id, subTopic2.id);
 
 const topic2 = rootTopic.addTopic('Starters');
-topic2.addNotes(['With free soft drink']);
+topic2.note = 'With free soft drink';
 const subTopic3 = topic2.addTopic('Smoked Bacon');
 const subTopic4 = topic2.addTopic('Fried Chicken', {labels: ['Hot Chilli']});
 
@@ -48,13 +50,13 @@ rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 ```javascript
 const workbook = builder().create([
     root('Grill House').children([
-        topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh, Marker.Flag.darkBlue]}).children([
+        topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh]}).children([
             topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']}),
             topic('Tomato Salad', { ref: 'topic:qux' })
         ]).summaries([
           summary('Get 10% off', { start: { ref: 'topic:baz' }, end: { ref: 'topic:qux' }})
         ]),
-        topic('Starters', { ref: 'topic:bar', notes: ['With free soft drink']}).children([
+        topic('Starters', { ref: 'topic:bar', note: 'With free soft drink'}).children([
             topic('Smoked Bacon', { ref: 'topic:fred' }),
             topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli']})
         ]),
@@ -123,29 +125,28 @@ const sheet = workbook.addSheet('My Sheet');
 const rootTopic = sheet.addRootTopic('Topic 1')
 
 // Specify properties
-topic.addNotes(['My Note', 'Another Note']);
-topic.labels  = ['My Label'];
-topic.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue])
+topic.note = 'this is a note';
+topic.addLabel('My Label');
+topic.addMarker(Marker.Arrow.refresh)
 
 // Also Use the second parameter of the addTopic method to specify properties for the topic easily.
 // For Example: Create a central topic with a text label and a note
-const rootTopic = sheet.addRootTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'});
+const rootTopic = sheet.addRootTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'}, markers: [Marker.Arrow.refresh]);
 
 // Access root topic
-const rootTopic = sheet.topic
+const rootTopic = sheet.rootTopic
+// Remove root topic
+sheet.removeRootTopic()
 ```
 
 ### Add a child topic to an existing topic
 ```javascript
-// Add subtopic is just like addTopic function of sheet object
+// Add child topic is just like addTopic function of sheet object
 const childTopic = topic.addTopic('Subtopic 1');
 
-// Access a topic by id
-const childTopic = topic.getTopic(id);
-
-// Access all child topics of parent topic
-const childTopics = topic.subtopics
-childTopics[0] // The first subtopic
+// Access child topics of parent topic
+const childTopics = topic.children
+childTopics[0] // The first child topic
 ```
 
 ### Remove a child Topic
@@ -197,7 +198,7 @@ const endTopic = topic.addTopic('Subtopic 3');
 
 // create summary of above three three topics
 const summary = topic.addSummary('My Summary', startTopic.id, endTopic.id);
-// Note: startTopic and endTopic must be children of current Topic, otherwise the summary object is abandoned.
+// Note: startTopic and endTopic must be children of current Topic, otherwise the summary object is discarded.
 
 // Access all summaries of topic
 const summaries = topic.summaries;
