@@ -15,7 +15,7 @@ describe('[archive] archive workbook', () => {
     const archived = await archive(workbook)
 
     const jzip = new JSZip()
-    unarchived = await jzip.loadAsync(archived, { base64: true })
+    unarchived = await jzip.loadAsync(archived)
   })
 
   it('should archive content.json, metadata.json and manifest.json', async () => {

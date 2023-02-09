@@ -1,8 +1,13 @@
 import { Workbook } from './internal/model/workbook'
+import { writeFile } from 'fs'
+import { archive } from './internal/archive'
 
 export async function saveLocal(workbook: Workbook, pathToDirectory: string) {
-  // TODO detect browser or node, save to local xmind file
-  const Path = suggestFilePath(workbook, pathToDirectory)
+  const savePath = suggestFilePath(workbook, pathToDirectory)
+  const buffer = await archive(workbook)
+  writeFile(savePath, Buffer.from(buffer), err => {
+    if (err) throw err
+  })
 }
 
 function suggestFilePath(workbook: Workbook, pathToDirectory: string): string {

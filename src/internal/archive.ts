@@ -3,7 +3,7 @@ import { Workbook } from './model/workbook'
 import { asJSONObject, serializeWorkbook } from './serializer'
 import { makeImageResourceStorage } from './storage'
 
-export async function archive(workbook: Workbook) {
+export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
   const zip = new jszip()
 
   const { storage, set } = makeImageResourceStorage()
@@ -32,5 +32,5 @@ export async function archive(workbook: Workbook) {
     })
   )
 
-  return await zip.generateAsync({ type: 'base64' })
+  return await zip.generateAsync({ type: 'arraybuffer', compression: 'STORE' })
 }
