@@ -1,5 +1,11 @@
 # xmind-generator
 
+`xmind-generator` is a javascript module that creates mind maps and generate Xmind files in the same manner as Xmind UI applications.
+
+Some essential concepts you need to know in order to use this module conveniently:
+An Xmind document is structured like a tree. The root component is called `Workbook`, which contains several sheets representing mind map panels. `Sheet` contain a `Root Topic` with possibly many child topics, and also that each child topic can be treated like the root of its own children.
+
+
 
 ## Contents
 
@@ -9,15 +15,15 @@
 - [License](#license)
 
 ## Install
-
 This is install information
 ## Usage
 
 **Building document**
+After you initialize a Workbook instance, you can operate directly on sheets and topics in order to create a new xmind document
 ```javascript
 const workbook = new Workbook();
 // If you create a single sheet workbook, you can use `createRoot` method of `workbook`,
-// Such method directly creates a sheet attach to the workbook, as well as a root topic of itself.
+// Such method directly creates a sheet attach to the workbook, as well as a root topic of the sheet.
 const rootTopic = workbook.createRoot('Grill House');
 
 const topic1 = rootTopic.addTopic('Salad');
