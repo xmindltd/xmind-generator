@@ -73,7 +73,7 @@ helper.saveLocal(document, '...path to an exist directory')
 
 ## Interface
 ---
-###Create a Xmind Workbook
+### Create a Xmind Workbook
 
 The workbook is a temporary storage where all the data are written.
 
@@ -81,7 +81,7 @@ The workbook is a temporary storage where all the data are written.
 const workbook = new Workbook();
 ```
 
-###Add a sheet
+### Add a sheet
 
 A Workbook contains serval sheets which represent mind map panels.
 
