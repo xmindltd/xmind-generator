@@ -4,9 +4,16 @@ import { Marker } from '../marker'
 
 describe('[internal/model/topic] constructor()', () => {
   it('should create a topic', () => {
-    const topic = new Topic('Smoked Bacon', { labels: ['sweat'] })
+    const topic = new Topic('Smoked Bacon', {
+      labels: ['sweat'],
+      markers: [Marker.People.darkBlue, Marker.Month.apr],
+      note: 'this is a note'
+    })
     expect(topic?.title).toBe('Smoked Bacon')
     expect(topic?.labels).contain('sweat')
+    expect(topic?.note).toBe('this is a note')
+    expect(topic?.markers.length).toBe(2)
+    expect(topic?.markers).contain(Marker.People.darkBlue)
   })
 })
 
@@ -68,5 +75,14 @@ describe('[internal/model/topic] addSummary()', () => {
     const summary = topic.addSummary('summary', childTopicBar.id, childTopicFoo.id)
     expect(summary.title).toBe('summary')
     expect(topic.summaries?.[0]).toBe(summary)
+  })
+})
+
+describe('[internal/model/topic] addLabel()', () => {
+  it('should add a label attach to topic', () => {
+    const topic = new Topic('Smoked Bacon')
+    expect(topic.labels.length).toBe(0)
+    topic.addLabel('label 1')
+    expect(topic.labels[0]).toBe('label 1')
   })
 })

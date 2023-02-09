@@ -48,6 +48,12 @@ export class Topic {
     return this._note
   }
 
+  set note(newNote: string | null) {
+    if (newNote) {
+      this._note = newNote.trim()
+    }
+  }
+
   get markers(): ReadonlyArray<MarkerId> {
     return this._markers
   }
@@ -72,6 +78,12 @@ export class Topic {
 
   public removeTopic(topicId: TopicId): void {
     this._children = this._children.filter(child => child.id !== topicId)
+  }
+
+  public addLabel(label: string): void {
+    if (!this._labels.includes(label)) {
+      this._labels.push(label)
+    }
   }
 
   public addImage(imageData: TopicImageData): void {
