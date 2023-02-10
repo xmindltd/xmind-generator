@@ -1,5 +1,6 @@
 import { TopicImageData } from './model/topic'
 import { uuid } from './common'
+import imageType from 'image-type'
 
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
 
@@ -19,12 +20,12 @@ export function makeImageResourceStorage(): ImageResourceStorageHandler {
   const resourceStorage: ResourceStorage = {}
   return {
     storage: resourceStorage,
-    set: (data: TopicImageData) => {
-      const imageType = imageTypeFromData(data)
+    set: (data: TopicImageData, type?: ImageType) => {
+      const imageType = type ?? imageTypeFromData(data)
       if (!imageType) {
         return null
       }
-      const resourcePath = `${uuid()}.${imageTypeFromData(data)}`
+      const resourcePath = `${uuid()}.${imageType}`
       resourceStorage[resourcePath] = data
       return resourcePath
     },
@@ -34,12 +35,26 @@ export function makeImageResourceStorage(): ImageResourceStorageHandler {
   }
 }
 
-export function assertImageData(imageData: TopicImageData): boolean {
-  // TODO: assert is valid image data
-  return true
-}
+export async function imageTypeFromData(imageData: TopicImageData): Promise<ImageType | null> {
+  let type: string
 
-export function imageTypeFromData(imageData: TopicImageData): ImageType | null {
-  // TODO: compute image file type from image data
-  return assertImageData(imageData) ? 'png' : null
+  if (typeof imageData === 'string') {
+    type = imageData.substring('data:image/'.length, imageData.indexOf(';base64'))
+  } else {
+    let buffer
+    if (imageData instanceof Blob) {
+      buffer = Buffer.from(await imageData.arrayBuffer())
+    } else if (imageData instanceof ArrayBuffer) {
+      buffer = Buffer.from(imageData)
+    } else {
+      buffer = imageData
+    }
+    type = (await imageType(Buffer.from(buffer)))?.ext ?? 'png'
+  }
+
+  if (type === 'png' || type === 'svg' || type === 'jpeg' || type === 'jpg' || type === 'gif' || type === 'webp') {
+    return type
+  }
+
+  return null
 }

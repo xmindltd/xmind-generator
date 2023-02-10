@@ -28,6 +28,7 @@
     "vitest": "^0.27.1"
   },
   "dependencies": {
+    "image-type": "^5.2.0",
     "jszip": "3.10.1"
   }
 }
