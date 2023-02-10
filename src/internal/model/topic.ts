@@ -1,9 +1,15 @@
 import { uuid } from '../common'
 import { MarkerId } from '../marker'
+import { ImageSource, ImageType } from '../storage'
 import { Summary, SummaryId } from './summary'
 
 export type TopicId = string
-export type TopicImageData = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
+
+export type TopicImageData = {
+  data: ImageSource
+  type: ImageType
+}
+
 export type TopicAttributes = {
   labels?: string[]
   note?: string
@@ -86,8 +92,11 @@ export class Topic {
     }
   }
 
-  public addImage(imageData: TopicImageData): void {
-    this._image = imageData
+  public addImage(imageData: ImageSource, imageType: ImageType): void {
+    this._image = {
+      data: imageData,
+      type: imageType
+    }
   }
 
   public removeImage(): void {

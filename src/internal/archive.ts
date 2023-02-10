@@ -17,7 +17,7 @@ export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
   const resources = zip.folder('resources')
   const resourcePaths = []
   for (const [path, data] of Object.entries(storage)) {
-    resources?.file(path, data)
+    resources?.file(path, data.data)
     resourcePaths.push(`resources/${path}`)
   }
 

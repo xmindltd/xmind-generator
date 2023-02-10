@@ -10,7 +10,7 @@ describe('[archive] archive workbook', () => {
   beforeEach(async () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
-    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0))
+    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0), 'png')
 
     const archived = await archive(workbook)
 
