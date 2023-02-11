@@ -52,7 +52,7 @@ export function builder() {
   return makeWorkbookBuilder()
 }
 
-export type TopicBuilderAttributes = { ref?: string } & TopicAttributes
+export type TopicBuilderAttributes = TopicAttributes
 export type RelationshipInfo = {
   title: string
   fromRef: string

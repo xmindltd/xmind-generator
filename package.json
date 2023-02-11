@@ -1,12 +1,22 @@
 {
   "name": "xmind-generator",
   "version": "0.0.0",
-  "main": "./src/index.js",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "typings": "./lib/esm/index.d.ts",
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
+  ],
   "repository": "https://github.com/xmindltd/xmind-generator.git",
   "author": "Xmind Ltd.",
   "license": "MIT",
   "scripts": {
-    "build": "yarn prettier && rm -rf lib && tsc --build",
+    "build-esm": "tsc --project tsconfig.json",
+    "build-cjs": "tsc --project tsconfig-cjs.json",
+    "clean": "rm -rf lib",
+    "build": "yarn prettier && yarn clean && yarn build-esm && yarn build-cjs",
     "test": "vitest",
     "prettier": "prettier --write \"src/**/*.ts\""
   },

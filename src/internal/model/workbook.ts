@@ -1,5 +1,6 @@
 import { Sheet, SheetId } from './sheet'
 import { Topic, TopicId } from './topic'
+import { archive } from '../archive'
 
 export class Workbook {
   private _sheets: Sheet[]
@@ -39,5 +40,9 @@ export class Workbook {
 
   public removeSheet(sheetId: SheetId): void {
     this._sheets = this._sheets.filter(sheet => sheet.id !== sheetId)
+  }
+
+  public archive(): Promise<ArrayBuffer> {
+    return archive(this)
   }
 }

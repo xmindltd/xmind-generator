@@ -8,6 +8,7 @@ export type ResourcePath = string
 export type ResourceStorage = SimpleStorage<ResourcePath, TopicImageData>
 
 export type ImageType = 'png' | 'svg' | 'jpeg' | 'jpg' | 'gif' | 'webp'
+export type ImageSource = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
 
 export interface ImageResourceStorageHandler {
   storage: ResourceStorage
@@ -20,11 +21,7 @@ export function makeImageResourceStorage(): ImageResourceStorageHandler {
   return {
     storage: resourceStorage,
     set: (data: TopicImageData) => {
-      const imageType = imageTypeFromData(data)
-      if (!imageType) {
-        return null
-      }
-      const resourcePath = `${uuid()}.${imageTypeFromData(data)}`
+      const resourcePath = `${uuid()}.${data.type}`
       resourceStorage[resourcePath] = data
       return resourcePath
     },

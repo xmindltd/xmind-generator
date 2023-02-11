@@ -2,7 +2,7 @@
 
 `xmind-generator` is a javascript module that creates mind maps and generate Xmind files in the same manner as Xmind UI applications.
 
-Some essential concepts you need to know in order to use this module conveniently:
+It may be helpful to know a few basic concepts before using this module:
 An Xmind document is structured like a tree. The root component is called `Workbook`, which contains several sheets representing mind map panels. `Sheet` contain a `Root Topic` with possibly many child topics, and also that each child topic can be treated like the root of its own children.
 
 
@@ -19,7 +19,9 @@ This is install information
 ## Usage
 
 **Building document**
-After you initialize a Workbook instance, you can operate directly on sheets and topics in order to create a new xmind document
+
+After initializing a Workbook instance, you can operate directly on sheets and topics to create a new xmind document
+
 ```javascript
 const workbook = new Workbook();
 // If you create a single sheet workbook, you can use `createRoot` method of `workbook`,
@@ -29,11 +31,11 @@ const rootTopic = workbook.createRoot('Grill House');
 const topic1 = rootTopic.addTopic('Salad');
 const subTopic1 = topic1.addTopic('Garden Salad', {labels: ['Lemon Vinaigrette', 'Ginger Dressing']});
 const subTopic2 = topic1.addTopic('Tomato Salad');
-topic1.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue]);
+topic1.addMarker(Marker.Arrow.refresh);
 topic1.addSummary('Get 10% off', subTopic1.id, subTopic2.id);
 
 const topic2 = rootTopic.addTopic('Starters');
-topic2.addNotes(['With free soft drink']);
+topic2.note = 'With free soft drink';
 const subTopic3 = topic2.addTopic('Smoked Bacon');
 const subTopic4 = topic2.addTopic('Fried Chicken', {labels: ['Hot Chilli']});
 
@@ -48,13 +50,13 @@ rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 ```javascript
 const workbook = builder().create([
     root('Grill House').children([
-        topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh, Marker.Flag.darkBlue]}).children([
+        topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh]}).children([
             topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']}),
             topic('Tomato Salad', { ref: 'topic:qux' })
         ]).summaries([
           summary('Get 10% off', { start: { ref: 'topic:baz' }, end: { ref: 'topic:qux' }})
         ]),
-        topic('Starters', { ref: 'topic:bar', notes: ['With free soft drink']}).children([
+        topic('Starters', { ref: 'topic:bar', note: 'With free soft drink'}).children([
             topic('Smoked Bacon', { ref: 'topic:fred' }),
             topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli']})
         ]),
@@ -69,11 +71,13 @@ const workbook = builder().create([
 
 **Export and save to local xmind file**
 ```javascript
-// Archive a workbook
-const document = workbook.archive()
 // Write to local xmind file
 // Note: `saveLocal` helper only available in the Node.js runtime
-helper.saveLocal(document, '...path to an exist directory')
+helper.saveLocal(workbook, '...path to an existing directory')
+
+// To use in browser javascript runtime, the ArrayBuffer to xmind file
+// can be generate by `archive` method.
+workbook.archive() // ArrayBuffer of document
 ```
 
 
@@ -121,31 +125,43 @@ Note: It is essential to know that `addTopic` method of a sheet can only use onc
 const workbook = new Workbook();
 const sheet = workbook.addSheet('My Sheet');
 const rootTopic = sheet.addRootTopic('Topic 1')
-
-// Specify properties
-topic.addNotes(['My Note', 'Another Note']);
-topic.labels  = ['My Label'];
-topic.addMarker([Marker.Arrow.refresh, Marker.Flag.darkBlue])
-
-// Also Use the second parameter of the addTopic method to specify properties for the topic easily.
-// For Example: Create a central topic with a text label and a note
-const rootTopic = sheet.addRootTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'});
-
-// Access root topic
-const rootTopic = sheet.topic
 ```
+**Access root topic**
+
+```javascript
+// Access root topic
+const rootTopic = sheet.rootTopic
+// Remove root topic
+sheet.removeRootTopic()
+```
+
+**Specify topic attributes**
+
+```javascript
+topic.note = 'this is a note';
+topic.addLabel('My Label');
+topic.addMarker(Marker.Arrow.refresh)
+
+// Also Use the second parameter of the addTopic method to specify attributes easily.
+// For Example: Create a root topic with a text label and a note as well as a marker.
+const rootTopic =
+    sheet.addRootTopic('Topic 1', {
+        labels: ['My label','Another Label'],
+        note: 'This is a note'},
+        markers: [Marker.Arrow.refresh]
+    );
+```
+> [Topic attributes list](#topic-attributes)
+
 
 ### Add a child topic to an existing topic
 ```javascript
-// Add subtopic is just like addTopic function of sheet object
+// Add child topic is just like addTopic function of sheet object
 const childTopic = topic.addTopic('Subtopic 1');
 
-// Access a topic by id
-const childTopic = topic.getTopic(id);
-
-// Access all child topics of parent topic
-const childTopics = topic.subtopics
-childTopics[0] // The first subtopic
+// Access child topics of parent topic
+const childTopics = topic.children
+childTopics[0] // The first child topic
 ```
 
 ### Remove a child Topic
@@ -157,11 +173,20 @@ topic.removeTopic(childTopic.id);
 ```
 
 ### Query a topic
-Use the `query` method to fetch a topic through id
+Use the `query` method to fetch a topic through id or a reference string
 ```javascript
 workbook.query(topic.id)
 sheet.query(topic.id)
 parentTopic.query(topic.id)
+```
+
+### Add image to topic
+```javascript
+topic.addImage('data:image/jpeg;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
+
+// For Node.js runtime, a `readImageFile` helper is ready to use
+const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
+topic.addImage(image.data, image.type)
 ```
 
 ### Apply a relationship between two Topics
@@ -197,7 +222,7 @@ const endTopic = topic.addTopic('Subtopic 3');
 
 // create summary of above three three topics
 const summary = topic.addSummary('My Summary', startTopic.id, endTopic.id);
-// Note: startTopic and endTopic must be children of current Topic, otherwise the summary object is abandoned.
+// Note: startTopic and endTopic must be children of current Topic, otherwise the summary object is discarded.
 
 // Access all summaries of topic
 const summaries = topic.summaries;
@@ -212,6 +237,14 @@ topic.removeSummary(summary.id);
 topic.removeSummary(childTopic.id)
 ```
 
+### Topic attributes
+
+| Attribute | Description                                                                 | Default Value |
+| --------- | ----------------------------------------------------------------------------| ------------- |
+| ref       | The reference string can be used to identify a topic and to query           | `null`        |
+| labels    | Array of labels.                                                            | `[]`          |
+| note      | Plain note text.                                                            | `null`        |
+| markers   | Array of `MarkerId` object.                                                 | `[]`          |
 ## License
 
 [MIT © Xmind LTD](../LICENSE)

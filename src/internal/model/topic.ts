@@ -1,18 +1,26 @@
 import { uuid } from '../common'
 import { MarkerId } from '../marker'
+import { ImageSource, ImageType } from '../storage'
 import { Summary, SummaryId } from './summary'
 
 export type TopicId = string
-export type TopicImageData = `data:image/${string}` | ArrayBuffer | Buffer | Blob | Uint8Array
+export type RefString = string
+
+export type TopicImageData = {
+  data: ImageSource
+  type: ImageType
+}
+
 export type TopicAttributes = {
+  ref?: RefString
   labels?: string[]
   note?: string
-  image?: TopicImageData | null
   markers?: MarkerId[]
 }
 
 export class Topic {
   readonly id: TopicId
+  readonly ref: RefString | null
   readonly title: string
   private _children: Topic[]
   private _summaries: Summary[]
@@ -26,7 +34,8 @@ export class Topic {
     this.title = title
     this._children = children ?? []
     this._summaries = []
-    this._image = attributes?.image ?? null
+    this._image = null
+    this.ref = attributes?.ref ?? null
     this._labels = attributes?.labels ?? []
     this._markers = attributes?.markers ?? []
     this._note = attributes?.note ?? null
@@ -48,6 +57,12 @@ export class Topic {
     return this._note
   }
 
+  set note(newNote: string | null) {
+    if (newNote) {
+      this._note = newNote.trim()
+    }
+  }
+
   get markers(): ReadonlyArray<MarkerId> {
     return this._markers
   }
@@ -56,11 +71,11 @@ export class Topic {
     return this._image
   }
 
-  public query(topicId: TopicId): Topic | null {
-    if (topicId === this.id) {
+  public query(identifier: TopicId | RefString): Topic | null {
+    if (identifier === this.id || identifier === this.ref) {
       return this
     } else {
-      return this._children.find(child => child.query(topicId) !== null) ?? null
+      return this._children.find(child => child.query(identifier) !== null) ?? null
     }
   }
 
@@ -74,8 +89,17 @@ export class Topic {
     this._children = this._children.filter(child => child.id !== topicId)
   }
 
-  public addImage(imageData: TopicImageData): void {
-    this._image = imageData
+  public addLabel(label: string): void {
+    if (!this._labels.includes(label)) {
+      this._labels.push(label)
+    }
+  }
+
+  public addImage(imageData: ImageSource, imageType: ImageType): void {
+    this._image = {
+      data: imageData,
+      type: imageType
+    }
   }
 
   public removeImage(): void {

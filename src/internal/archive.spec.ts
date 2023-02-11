@@ -10,12 +10,12 @@ describe('[archive] archive workbook', () => {
   beforeEach(async () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
-    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0))
+    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0), 'png')
 
     const archived = await archive(workbook)
 
     const jzip = new JSZip()
-    unarchived = await jzip.loadAsync(archived, { base64: true })
+    unarchived = await jzip.loadAsync(archived)
   })
 
   it('should archive content.json, metadata.json and manifest.json', async () => {
@@ -51,4 +51,3 @@ describe('[archive] archive workbook', () => {
     expect(Object.keys(fileEntries)[0]).toMatch(/resources/)
   })
 })
-
