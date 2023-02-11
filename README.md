@@ -2,7 +2,7 @@
 
 `xmind-generator` is a javascript module that creates mind maps and generate Xmind files in the same manner as Xmind UI applications.
 
-It may be helpful to know a few basic concepts before using this module:
+It may be helpful to know a few basic concepts before using this module:<br>
 An Xmind document is structured like a tree. The root component is called `Workbook`, which contains several sheets representing mind map panels. `Sheet` contain a `Root Topic` with possibly many child topics, and also that each child topic can be treated like the root of its own children.
 
 
@@ -27,22 +27,23 @@ const workbook = new Workbook();
 // If you create a single sheet workbook, you can use `createRoot` method of `workbook`,
 // Such method directly creates a sheet attach to the workbook, as well as a root topic of the sheet.
 const rootTopic = workbook.createRoot('Grill House');
+rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 
 const topic1 = rootTopic.addTopic('Salad');
-const subTopic1 = topic1.addTopic('Garden Salad', {labels: ['Lemon Vinaigrette', 'Ginger Dressing']});
-const subTopic2 = topic1.addTopic('Tomato Salad');
 topic1.addMarker(Marker.Arrow.refresh);
 topic1.addSummary('Get 10% off', subTopic1.id, subTopic2.id);
 
+const subTopic1 = topic1.addTopic('Garden Salad', {labels: ['Lemon Vinaigrette', 'Ginger Dressing']});
+const subTopic2 = topic1.addTopic('Tomato Salad');
+
 const topic2 = rootTopic.addTopic('Starters');
 topic2.note = 'With free soft drink';
+
 const subTopic3 = topic2.addTopic('Smoked Bacon');
 const subTopic4 = topic2.addTopic('Fried Chicken', {labels: ['Hot Chilli']});
 
-
 workbook.sheets[0].addRelationship('', topic1.id, topic2.id);
 workbook.sheets[0].addRelationship('Special', subTopic3.id, subTopic4.id);
-rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 ```
 
 **There is also a faster way to build the same document**
@@ -175,9 +176,10 @@ topic.removeTopic(childTopic.id);
 ### Query a topic
 Use the `query` method to fetch a topic through id or a reference string
 ```javascript
-workbook.query(topic.id)
-sheet.query(topic.id)
-parentTopic.query(topic.id)
+const topic = sheet.addTopic('Topic 1', { ref: 'qux' });
+workbook.query(topic.id);
+workbook.query(topic.ref);
+// `query` method also available on `Sheet` and `Topic`
 ```
 
 ### Add image to topic
