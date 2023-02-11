@@ -15,7 +15,6 @@ export type TopicAttributes = {
   ref?: RefString
   labels?: string[]
   note?: string
-  image?: TopicImageData | null
   markers?: MarkerId[]
 }
 
@@ -35,8 +34,8 @@ export class Topic {
     this.title = title
     this._children = children ?? []
     this._summaries = []
+    this._image = null
     this.ref = attributes?.ref ?? null
-    this._image = attributes?.image ?? null
     this._labels = attributes?.labels ?? []
     this._markers = attributes?.markers ?? []
     this._note = attributes?.note ?? null

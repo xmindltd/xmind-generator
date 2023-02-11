@@ -2,7 +2,7 @@
 
 `xmind-generator` is a javascript module that creates mind maps and generate Xmind files in the same manner as Xmind UI applications.
 
-Some essential concepts you need to know in order to use this module conveniently:
+It may be helpful to know a few basic concepts before using this module:
 An Xmind document is structured like a tree. The root component is called `Workbook`, which contains several sheets representing mind map panels. `Sheet` contain a `Root Topic` with possibly many child topics, and also that each child topic can be treated like the root of its own children.
 
 
@@ -20,7 +20,7 @@ This is install information
 
 **Building document**
 
-After you initialize a Workbook instance, you can operate directly on sheets and topics in order to create a new xmind document
+After initializing a Workbook instance, you can operate directly on sheets and topics to create a new xmind document
 
 ```javascript
 const workbook = new Workbook();
@@ -71,11 +71,13 @@ const workbook = builder().create([
 
 **Export and save to local xmind file**
 ```javascript
-// Archive a workbook
-const document = workbook.archive()
 // Write to local xmind file
 // Note: `saveLocal` helper only available in the Node.js runtime
-helper.saveLocal(document, '...path to an exist directory')
+helper.saveLocal(workbook, '...path to an existing directory')
+
+// To use in browser javascript runtime, the ArrayBuffer to xmind file
+// can be generate by `archive` method.
+workbook.archive() // ArrayBuffer of document
 ```
 
 
@@ -123,21 +125,34 @@ Note: It is essential to know that `addTopic` method of a sheet can only use onc
 const workbook = new Workbook();
 const sheet = workbook.addSheet('My Sheet');
 const rootTopic = sheet.addRootTopic('Topic 1')
+```
+**Access root topic**
 
-// Specify properties
-topic.note = 'this is a note';
-topic.addLabel('My Label');
-topic.addMarker(Marker.Arrow.refresh)
-
-// Also Use the second parameter of the addTopic method to specify properties for the topic easily.
-// For Example: Create a central topic with a text label and a note
-const rootTopic = sheet.addRootTopic('Topic 1', {labels: ['My label','Another Label'], note: 'This is a note'}, markers: [Marker.Arrow.refresh]);
-
+```javascript
 // Access root topic
 const rootTopic = sheet.rootTopic
 // Remove root topic
 sheet.removeRootTopic()
 ```
+
+**Specify topic attributes**
+
+```javascript
+topic.note = 'this is a note';
+topic.addLabel('My Label');
+topic.addMarker(Marker.Arrow.refresh)
+
+// Also Use the second parameter of the addTopic method to specify attributes easily.
+// For Example: Create a root topic with a text label and a note as well as a marker.
+const rootTopic =
+    sheet.addRootTopic('Topic 1', {
+        labels: ['My label','Another Label'],
+        note: 'This is a note'},
+        markers: [Marker.Arrow.refresh]
+    );
+```
+> [Topic attributes list](#topic-attributes)
+
 
 ### Add a child topic to an existing topic
 ```javascript
@@ -158,11 +173,20 @@ topic.removeTopic(childTopic.id);
 ```
 
 ### Query a topic
-Use the `query` method to fetch a topic through id
+Use the `query` method to fetch a topic through id or a reference string
 ```javascript
 workbook.query(topic.id)
 sheet.query(topic.id)
 parentTopic.query(topic.id)
+```
+
+### Add image to topic
+```javascript
+topic.addImage('data:image/jpeg;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
+
+// For Node.js runtime, a `readImageFile` helper is ready to use
+const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
+topic.addImage(image.data, image.type)
 ```
 
 ### Apply a relationship between two Topics
@@ -213,6 +237,14 @@ topic.removeSummary(summary.id);
 topic.removeSummary(childTopic.id)
 ```
 
+### Topic attributes
+
+| Attribute | Description                                                                 | Default Value |
+| --------- | ----------------------------------------------------------------------------| ------------- |
+| ref       | The reference string can be used to identify a topic and to query           | `null`        |
+| labels    | Array of labels.                                                            | `[]`          |
+| note      | Plain note text.                                                            | `null`        |
+| markers   | Array of `MarkerId` object.                                                 | `[]`          |
 ## License
 
 [MIT © Xmind LTD](../LICENSE)
