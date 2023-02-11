@@ -32,14 +32,15 @@ describe('[internal/model/topic] query()', () => {
   it('should return proper topic', () => {
     const parentTopic = new Topic('Smoked Bacon')
     parentTopic.addTopic('Ice cream')
-    const childTopic = parentTopic.addTopic('Fried Chicken')
+    const childTopic = parentTopic.addTopic('Fried Chicken', { ref: 'rootTopic' })
     expect(parentTopic?.query?.(parentTopic.id)).toBe(parentTopic)
     expect(parentTopic?.query?.(childTopic.id)).toBe(childTopic)
+    expect(parentTopic?.query?.('rootTopic')).toBe(childTopic)
   })
   it('should return null', () => {
     const parentTopic = new Topic('Smoked Bacon')
-    const childTopic = parentTopic.addTopic('Fried Chicken')
-    expect(parentTopic?.query?.(childTopic.id + 'abc')).toBeNull()
+    parentTopic.addTopic('Fried Chicken')
+    expect(parentTopic?.query?.('abc')).toBeNull()
   })
 })
 

@@ -4,6 +4,7 @@ import { ImageSource, ImageType } from '../storage'
 import { Summary, SummaryId } from './summary'
 
 export type TopicId = string
+export type RefString = string
 
 export type TopicImageData = {
   data: ImageSource
@@ -11,6 +12,7 @@ export type TopicImageData = {
 }
 
 export type TopicAttributes = {
+  ref?: RefString
   labels?: string[]
   note?: string
   image?: TopicImageData | null
@@ -19,6 +21,7 @@ export type TopicAttributes = {
 
 export class Topic {
   readonly id: TopicId
+  readonly ref: RefString | null
   readonly title: string
   private _children: Topic[]
   private _summaries: Summary[]
@@ -32,6 +35,7 @@ export class Topic {
     this.title = title
     this._children = children ?? []
     this._summaries = []
+    this.ref = attributes?.ref ?? null
     this._image = attributes?.image ?? null
     this._labels = attributes?.labels ?? []
     this._markers = attributes?.markers ?? []
@@ -68,11 +72,11 @@ export class Topic {
     return this._image
   }
 
-  public query(topicId: TopicId): Topic | null {
-    if (topicId === this.id) {
+  public query(identifier: TopicId | RefString): Topic | null {
+    if (identifier === this.id || identifier === this.ref) {
       return this
     } else {
-      return this._children.find(child => child.query(topicId) !== null) ?? null
+      return this._children.find(child => child.query(identifier) !== null) ?? null
     }
   }
 
