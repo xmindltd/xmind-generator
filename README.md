@@ -76,8 +76,8 @@ const workbook = builder().create([
 // Note: `saveLocal` helper only available in the Node.js runtime
 helper.saveLocal(workbook, '...path to an existing directory')
 
-// To use in browser javascript runtime, the ArrayBuffer to xmind file
-// can be generate by `archive` method.
+// To use in browser javascript runtime, the ArrayBuffer to xmind file can be
+// generate by `archive` method, then download it with `.xmind` file extension
 workbook.archive() // ArrayBuffer of document
 ```
 
@@ -152,12 +152,11 @@ const rootTopic =
         markers: [Marker.Arrow.refresh]
     );
 ```
-> [Topic attributes list](#topic-attributes)
+> [Full topic attributes list](#topic-attributes)
 
 
 ### Add a child topic to an existing topic
 ```javascript
-// Add child topic is just like addTopic function of sheet object
 const childTopic = topic.addTopic('Subtopic 1');
 
 // Access child topics of parent topic
@@ -174,17 +173,17 @@ topic.removeTopic(childTopic.id);
 ```
 
 ### Query a topic
-Use the `query` method to fetch a topic through id or a reference string
+Use the `query` method to find a topic through id or a reference string
 ```javascript
 const topic = sheet.addTopic('Topic 1', { ref: 'qux' });
 workbook.query(topic.id);
-workbook.query(topic.ref);
-// `query` method also available on `Sheet` and `Topic`
+workbook.query('qux');
+// The `query` method is also available for `Sheet` and `Topic`, only for searching their children
 ```
 
 ### Add image to topic
 ```javascript
-topic.addImage('data:image/jpeg;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
+topic.addImage('data:image/png;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
 
 // For Node.js runtime, a `readImageFile` helper is ready to use
 const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
