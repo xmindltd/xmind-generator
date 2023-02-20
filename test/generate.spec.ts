@@ -9,18 +9,19 @@ describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
     const workbook = builder()
       .create([
-        root('Grill House', { ref: 'topic:inf' })
+        root('Grill House')
+          .ref('topic:inf')
           .children([
-            topic('Salad', { ref: 'topic:foo', markers: [Marker.Arrow.refresh] }).children([
+            topic('Salad', { markers: [Marker.Arrow.refresh] }).ref('topic:foo').children([
               topic('Garden Salad', {
                 ref: 'topic:baz',
                 labels: ['Lemon Vinaigrette', 'Ginger Dressing']
               }),
-              topic('Tomato Salad', { ref: 'topic:qux' })
+              topic('Tomato Salad').ref('topic:qux')
             ]),
-            topic('Starters', { ref: 'topic:bar', note: 'With free soft drink' }).children([
-              topic('Smoked Bacon', { ref: 'topic:fred' }),
-              topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli'] })
+            topic('Starters', { note: 'With free soft drink' }).ref('topic:bar').children([
+              topic('Smoked Bacon').ref('topic:fred'),
+              topic('Fried Chicken', { labels: ['Hot Chilli'] }).ref('topic:thud')
             ])
           ])
           .relationships([
