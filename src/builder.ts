@@ -1,7 +1,7 @@
 import { makeSheetBuilder } from './internal/builder/sheetBuilder'
 import { makeTopicBuilder } from './internal/builder/topicBuilder'
 import { makeWorkbookBuilder } from './internal/builder/workbookBuilder'
-import { RefString, Topic, TopicAttributes, TopicImageData } from './internal/model/topic'
+import { RefString, Topic, TopicAttributes } from './internal/model/topic'
 import { Sheet } from './internal/model/sheet'
 import { Workbook } from './internal/model/workbook'
 import { Reference } from './internal/builder/ref'
@@ -30,7 +30,6 @@ export function sheet(title?: string): SheetBuilder {
 }
 
 export function root(title: string): RootBuilder {
-  let _ref: RefString | undefined = undefined
   const sheetBuilder = makeSheetBuilder()
   const topicBuilder = makeTopicBuilder(title)
   sheetBuilder.rootTopic(topicBuilder)
@@ -51,12 +50,36 @@ export function root(title: string): RootBuilder {
       sheetBuilder.relationships(relationships)
       return this
     },
+    image(data: ImageSource, type: ImageType) {
+      topicBuilder.image(data, type)
+      return this
+    },
+    note(newNote: string) {
+      topicBuilder.note(newNote)
+      return this
+    },
+
+    labels(labels: ReadonlyArray<string>) {
+      topicBuilder.labels(labels)
+      return this
+    },
+    markers(markers: ReadonlyArray<MarkerId>) {
+      topicBuilder.markers(markers)
+      return this
+    },
+
     build: sheetBuilder.build
   }
 }
 
 export function builder() {
   return makeWorkbookBuilder()
+}
+
+export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder): Workbook {
+  return builder()
+    .create(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
+    .build()
 }
 
 export type TopicBuilderAttributes = TopicAttributes
@@ -71,26 +94,27 @@ export type SummaryInfo = {
   endRef: string
 }
 
-export interface TopicBuilder {
-  ref: (ref: RefString) => this
-  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => this
-  image: (data: ImageSource, type: ImageType) => this
-  note: (newNote: string) => this
-  labels: (labels: ReadonlyArray<string>) => this
-  markers: (markers: ReadonlyArray<MarkerId>) => this
-  summaries: (summaries: ReadonlyArray<SummaryInfo>) => this
+interface BaseTopicBuilder<T> {
+  ref: (ref: RefString) => T
+  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => T
+  image: (data: ImageSource, type: ImageType) => T
+  note: (newNote: string) => T
+  labels: (labels: ReadonlyArray<string>) => T
+  markers: (markers: ReadonlyArray<MarkerId>) => T
+  summaries: (summaries: ReadonlyArray<SummaryInfo>) => T
+}
+export interface TopicBuilder extends BaseTopicBuilder<TopicBuilder> {
   build: () => { topic: Topic; reference: Reference<Topic> }
+}
+
+export interface RootBuilder extends BaseTopicBuilder<RootBuilder> {
+  relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
+  build: () => Sheet
 }
 export interface SheetBuilder {
   rootTopic: (topicBuilder: TopicBuilder) => this
   relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
   build: () => Sheet
-}
-export interface RootBuilder extends Pick<SheetBuilder, 'build'> {
-  ref: (ref: RefString) => this
-  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => this
-  summaries: (summaries: ReadonlyArray<SummaryInfo>) => this
-  relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
 }
 export interface WorkbookBuilder {
   create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => this
