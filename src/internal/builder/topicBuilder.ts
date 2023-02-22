@@ -69,8 +69,10 @@ export function makeTopicBuilder(title: string): TopicBuilder {
         makeReference<Topic>(attributes?.ref ? { [attributes.ref]: topic } : {}),
         ...childReferences
       ])
-      summaryInfos.forEach(({ title, startRef, endRef }) => {
-        topic.addSummary(title, reference.fetch(startRef).id, reference.fetch(endRef).id)
+      summaryInfos.forEach(({ title, from, to }) => {
+        const fromIdentifier = typeof from === 'number' ? from : reference.fetch(from).id
+        const toIdentifier = typeof to === 'number' ? to : reference.fetch(to).id
+        topic.addSummary(title, fromIdentifier, toIdentifier)
       })
 
       return { topic, reference }

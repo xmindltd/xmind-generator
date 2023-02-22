@@ -4,7 +4,6 @@ export {
   summary as Summary,
   root as Root,
   generateWorkbook,
-  TopicBuilderAttributes,
   RelationshipInfo,
   SummaryInfo,
   TopicBuilder,

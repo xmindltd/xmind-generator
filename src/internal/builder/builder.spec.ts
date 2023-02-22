@@ -33,13 +33,13 @@ describe('[builder] *', () => {
               ])
           ])
           .relationships([
-            relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
-            relationship('Special', { from: { ref: 'topic:fred' }, to: { ref: 'topic:thud' } })
+            relationship('', { from: 'topic:foo', to: 'topic:bar' }),
+            relationship('Special', { from: 'topic:fred', to: 'topic:thud' })
           ])
           .summaries([
             summary('Fresh and Delicious', {
-              start: { ref: 'topic:foo' },
-              end: { ref: 'topic:bar' }
+              from: 'topic:foo',
+              to: 'topic:bar'
             })
           ])
       ])
@@ -71,9 +71,7 @@ describe('[builder] *', () => {
             topic('Starters').ref('topic:bar')
           ])
         )
-        .relationships([
-          relationship('', { from: { ref: 'topic:errorRef' }, to: { ref: 'topic:bar' } })
-        ])
+        .relationships([relationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
         .build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })
@@ -106,7 +104,7 @@ describe('[builder] *', () => {
     const rootTopic = workbook?.sheets?.[0]?.rootTopic
     expect(rootTopic?.summaries).length(1)
     expect(rootTopic?.summaries?.[0]?.title).toBe('Fresh and Delicious')
-    expect(rootTopic?.summaries?.[0]?.startTopicId).toBe(rootTopic?.children?.[0]?.id)
-    expect(rootTopic?.summaries?.[0]?.endTopicId).toBe(rootTopic?.children?.[1]?.id)
+    expect(rootTopic?.summaries?.[0]?.from).toBe(rootTopic?.children?.[0]?.id)
+    expect(rootTopic?.summaries?.[0]?.to).toBe(rootTopic?.children?.[1]?.id)
   })
 })

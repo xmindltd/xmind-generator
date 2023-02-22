@@ -1,7 +1,7 @@
 import { makeSheetBuilder } from './internal/builder/sheetBuilder'
 import { makeTopicBuilder } from './internal/builder/topicBuilder'
 import { makeWorkbookBuilder } from './internal/builder/workbookBuilder'
-import { RefString, Topic, TopicAttributes } from './internal/model/topic'
+import { RefString, Topic } from './internal/model/topic'
 import { Sheet } from './internal/model/sheet'
 import { Workbook } from './internal/model/workbook'
 import { Reference } from './internal/builder/ref'
@@ -13,16 +13,16 @@ export function topic(title: string): TopicBuilder {
 }
 export function relationship(
   title: string,
-  attributes: { from: { ref: string }; to: { ref: string } }
+  attributes: { from: string; to: string }
 ): RelationshipInfo {
-  return { title, fromRef: attributes.from.ref, toRef: attributes.to.ref }
+  return { title, from: attributes.from, to: attributes.to }
 }
 
 export function summary(
   title: string,
-  attributes: { start: { ref: string }; end: { ref: string } }
+  attributes: { from: string | number; to: string | number }
 ): SummaryInfo {
-  return { title, startRef: attributes.start.ref, endRef: attributes.end.ref }
+  return { title, from: attributes.from, to: attributes.to }
 }
 
 export function sheet(title?: string): SheetBuilder {
@@ -82,16 +82,15 @@ export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootB
     .build()
 }
 
-export type TopicBuilderAttributes = TopicAttributes
 export type RelationshipInfo = {
   title: string
-  fromRef: string
-  toRef: string
+  from: string
+  to: string
 }
 export type SummaryInfo = {
   title: string
-  startRef: string
-  endRef: string
+  from: string | number
+  to: string | number
 }
 
 interface BaseTopicBuilder<T> {

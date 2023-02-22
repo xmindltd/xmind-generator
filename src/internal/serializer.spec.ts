@@ -9,7 +9,7 @@ import { makeImageResourceStorage } from './storage'
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', () => {
     const workbook = builder()
-      .create([root('Grill House', { ref: 'topic:inf' })])
+      .create([root('Grill House')])
       .build()
     const serializedWorkbook = serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()

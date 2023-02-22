@@ -17,14 +17,12 @@ describe('[internal/model/topic] constructor()', () => {
   })
 })
 
-describe('[internal/model/topic] addTopic()/removeTopic()', () => {
+describe('[internal/model/topic] addTopic()', () => {
   it('should add a child topic attach to current topic', () => {
     const topic = new Topic('Smoked Bacon')
     const childTopic = topic.addTopic('Fried Chicken', { labels: ['spicy'] })
     expect(childTopic?.title).toBe('Fried Chicken')
     expect(childTopic?.labels).contain('spicy')
-    topic.removeTopic(childTopic?.id)
-    expect(topic?.children[0]).toBeUndefined()
   })
 })
 
@@ -56,15 +54,6 @@ describe('[internal/model/topic] addMaker()', () => {
     expect(() => topic.addMarker(Marker.People.gray)).toThrowError(
       'Marker creation with same group is not allowed'
     )
-  })
-})
-
-describe('[internal/model/topic] removeMarker()', () => {
-  it('should remove a marker from topic', () => {
-    const topic = new Topic('Smoked Bacon')
-    topic.addMarker(Marker.Month.jan)
-    topic.removeMarker(Marker.Month.jan)
-    expect(topic.markers[0]).toBeUndefined()
   })
 })
 

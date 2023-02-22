@@ -1,6 +1,6 @@
 import { uuid } from '../common'
 import { Topic, TopicId } from './topic'
-import { Relationship, RelationshipId } from './relationship'
+import { Relationship } from './relationship'
 
 export type SheetId = string
 export class Sheet {
@@ -24,7 +24,7 @@ export class Sheet {
     return this._relationships
   }
 
-  public query(topicId: TopicId): Topic | null {
+  query(topicId: TopicId): Topic | null {
     return this._rootTopic?.query(topicId) ?? null
   }
 
@@ -40,18 +40,9 @@ export class Sheet {
     this._rootTopic = null
   }
 
-  public addRelationship(title: string, startTopicId: TopicId, endTopicId: TopicId): Relationship {
-    const relationship = new Relationship(title, startTopicId, endTopicId)
+  public addRelationship(title: string, from: TopicId, to: TopicId): Relationship {
+    const relationship = new Relationship(title, from, to)
     this._relationships.push(relationship)
     return relationship
-  }
-
-  public removeRelationship(identifier: RelationshipId | TopicId): void {
-    this._relationships = this._relationships.filter(
-      relationship =>
-        relationship.id !== identifier &&
-        relationship.fromTopicId !== identifier &&
-        relationship.toTopicId !== identifier
-    )
   }
 }

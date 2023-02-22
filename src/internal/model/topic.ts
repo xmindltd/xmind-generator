@@ -1,7 +1,7 @@
 import { uuid } from '../common'
 import { MarkerId } from '../marker'
 import { ImageSource, ImageType } from '../storage'
-import { Summary, SummaryId } from './summary'
+import { Summary } from './summary'
 
 export type TopicId = string
 export type RefString = string
@@ -85,10 +85,6 @@ export class Topic {
     return childTopic
   }
 
-  public removeTopic(topicId: TopicId): void {
-    this._children = this._children.filter(child => child.id !== topicId)
-  }
-
   public addLabel(label: string): void {
     if (!this._labels.includes(label)) {
       this._labels.push(label)
@@ -102,10 +98,6 @@ export class Topic {
     }
   }
 
-  public removeImage(): void {
-    this._image = null
-  }
-
   public addMarker(markerId: MarkerId): void {
     if (this._markers.find(id => id.isSameGroup(markerId))) {
       throw new Error('Marker creation with same group is not allowed')
@@ -113,26 +105,13 @@ export class Topic {
     this._markers.push(markerId)
   }
 
-  public removeMarker(markerId: MarkerId): void {
-    this._markers = this._markers.filter(m => m.id !== markerId.id)
-  }
-
-  public addSummary(title: string, startTopicId: TopicId, endTopicId: TopicId): Summary {
-    const summaryToAdd = new Summary(title, startTopicId, endTopicId)
+  public addSummary(title: string, from: TopicId | number, to: TopicId | number): Summary {
+    const summaryToAdd = new Summary(title, from, to)
     const summaryFound = this._summaries.find(summary => summary.isEqualTo(summaryToAdd))
     if (summaryFound) {
       return summaryFound
     }
     this._summaries.push(summaryToAdd)
     return summaryToAdd
-  }
-
-  public removeSummary(identifier: SummaryId | TopicId) {
-    this._summaries = this._summaries.filter(
-      summary =>
-        summary.id !== identifier &&
-        summary.endTopicId !== identifier &&
-        summary.startTopicId !== identifier
-    )
   }
 }

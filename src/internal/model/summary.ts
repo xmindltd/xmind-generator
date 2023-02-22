@@ -6,19 +6,19 @@ export type SummaryId = string
 export class Summary {
   readonly id: SummaryId
   readonly title: string
-  readonly startTopicId: string
-  readonly endTopicId: string
+  readonly from: TopicId | number
+  readonly to: TopicId | number
 
-  constructor(title: string, startTopicId: TopicId, endTopicId: TopicId) {
+  constructor(title: string, from: TopicId | number, to: TopicId | number) {
     this.id = uuid()
     this.title = title
-    this.startTopicId = startTopicId
-    this.endTopicId = endTopicId
+    this.from = from
+    this.to = to
   }
 
   public isEqualTo(SummaryToCompare: Summary) {
-    return [this.startTopicId, this.endTopicId].every(
-      id => SummaryToCompare.startTopicId === id || SummaryToCompare.endTopicId === id
+    return [this.from, this.to].every(
+      identifier => SummaryToCompare.from === identifier || SummaryToCompare.to === identifier
     )
   }
 }

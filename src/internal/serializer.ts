@@ -125,9 +125,10 @@ export function serializeSummary(
   topic: Readonly<Topic>,
   summary: Summary
 ): Readonly<SerializedObject> | null {
-  const { id, startTopicId, endTopicId } = summary
-  const rangeStart = topic.children.findIndex(child => child.query(startTopicId))
-  const rangeEnd = topic.children.findIndex(child => child.query(endTopicId))
+  const { id, from, to } = summary
+  const rangeStart =
+    typeof from === 'number' ? from : topic.children.findIndex(child => child.query(from))
+  const rangeEnd = typeof to === 'number' ? to : topic.children.findIndex(child => child.query(to))
   if (rangeStart < 0 || rangeEnd < 0) {
     return null
   }
