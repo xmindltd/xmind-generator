@@ -9,7 +9,20 @@
     "package.json",
     "README.md"
   ],
-  "repository": "https://github.com/xmindltd/xmind-generator.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xmindltd/xmind-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xmindltd/xmind-generator/issues"
+  },
+  "keywords": [
+    "xmind-generator",
+    "xmind",
+    "xmindsdk",
+    "xmind-sdk",
+    "xmind-package"
+  ],
   "author": "Xmind Ltd.",
   "license": "MIT",
   "scripts": {
