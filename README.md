@@ -27,17 +27,18 @@ const workbook = new Workbook();
 // If you create a single sheet workbook, you can use `createRoot` method of `workbook`,
 // Such method directly creates a sheet attach to the workbook, as well as a root topic of the sheet.
 const rootTopic = workbook.createRoot('Grill House');
-rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 
 const topic1 = rootTopic.addTopic('Salad');
 topic1.addMarker(Marker.Arrow.refresh);
-topic1.addSummary('Get 10% off', subTopic1.id, subTopic2.id);
 
 const subTopic1 = topic1.addTopic('Garden Salad', {labels: ['Lemon Vinaigrette', 'Ginger Dressing']});
 const subTopic2 = topic1.addTopic('Tomato Salad');
+topic1.addSummary('Get 10% off', subTopic1.id, subTopic2.id);
 
 const topic2 = rootTopic.addTopic('Starters');
 topic2.note = 'With free soft drink';
+
+rootTopic.addSummary('Fresh and Delicious', topic1.id, topic2.id);
 
 const subTopic3 = topic2.addTopic('Smoked Bacon');
 const subTopic4 = topic2.addTopic('Fried Chicken', {labels: ['Hot Chilli']});
@@ -51,21 +52,21 @@ workbook.sheets[0].addRelationship('Special', subTopic3.id, subTopic4.id);
 ```javascript
 const workbook = builder().create([
     root('Grill House').children([
-        topic('Salad', { ref: 'topic:foo', marker: [Marker.Arrow.refresh]}).children([
-            topic('Garden Salad', { ref: 'topic:baz', labels: ['Lemon Vinaigrette', 'Ginger Dressing']}),
-            topic('Tomato Salad', { ref: 'topic:qux' })
+        topic('Salad').ref('topic:foo').markers([Marker.Arrow.refresh]).children([
+            topic('Garden Salad').ref('topic:baz').labels(['Lemon Vinaigrette', 'Ginger Dressing']),
+            topic('Tomato Salad').ref('topic:qux')
         ]).summaries([
-          summary('Get 10% off', { start: { ref: 'topic:baz' }, end: { ref: 'topic:qux' }})
+            summary('Get 10% off', { from: 'topic:baz', to:  'topic:qux' })
         ]),
-        topic('Starters', { ref: 'topic:bar', note: 'With free soft drink'}).children([
-            topic('Smoked Bacon', { ref: 'topic:fred' }),
-            topic('Fried Chicken', { ref: 'topic:thud', labels: ['Hot Chilli']})
+        topic('Starters').ref('topic:bar').note('With free soft drink').children([
+            topic('Smoked Bacon').ref('topic:fred'),
+            topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
         ]),
     ]).relationships([
         relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' }}),
-        relationship('Special', { from: { ref: 'topic:fred' }, to: { ref: 'topic:thud' }})
+        relationship('Special', { from: { topic: 'Smoked Bacon' }, to: { topic: 'Fried Chicken' }})
     ]).summaries([
-        summary('Fresh and Delicious', { start: { ref: 'topic:foo' }, end: { ref: 'topic:bar' }})
+        summary('Fresh and Delicious', { from: 'topic:foo', to: 'topic:bar' })
     ])
 ]).build()
 ```
