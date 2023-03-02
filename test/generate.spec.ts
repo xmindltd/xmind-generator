@@ -29,8 +29,8 @@ describe('write xmind file', () => {
             ])
         ])
         .relationships([
-          Relationship('', { from: 'topic:foo', to: 'topic:bar' }),
-          Relationship('Special', { from: 'topic:fred', to: 'topic:thud' })
+          Relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
+          Relationship('Special', { from: { ref: 'topic:fred'}, to: { ref: 'topic:thud' } })
         ])
         .summaries([Summary('Fresh and Delicious', { from: 'topic:foo', to: 'topic:bar' })])
     )

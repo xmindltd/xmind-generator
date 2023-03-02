@@ -11,9 +11,12 @@ import { MarkerId } from './internal/marker'
 export function topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
+
+export type TopicSelector = { readonly ref: string } | { readonly title: string }
+
 export function relationship(
   title: string,
-  attributes: { from: string; to: string }
+  attributes: { from: TopicSelector; to: TopicSelector }
 ): RelationshipInfo {
   return { title, from: attributes.from, to: attributes.to }
 }
@@ -84,8 +87,8 @@ export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootB
 
 export type RelationshipInfo = {
   title: string
-  from: string
-  to: string
+  from: TopicSelector
+  to: TopicSelector
 }
 export type SummaryInfo = {
   title: string
@@ -103,7 +106,7 @@ interface BaseTopicBuilder<T> {
   summaries: (summaries: ReadonlyArray<SummaryInfo>) => T
 }
 export interface TopicBuilder extends BaseTopicBuilder<TopicBuilder> {
-  build: () => { topic: Topic; reference: Reference<Topic> }
+  build: () => { topic: Topic; reference: Reference<Topic>; titleReference: Reference<Topic> }
 }
 
 export interface RootBuilder extends BaseTopicBuilder<RootBuilder> {

@@ -33,8 +33,11 @@ describe('[builder] *', () => {
               ])
           ])
           .relationships([
-            relationship('', { from: 'topic:foo', to: 'topic:bar' }),
-            relationship('Special', { from: 'topic:fred', to: 'topic:thud' })
+            relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
+            relationship('Special', {
+              from: { title: 'Smoked Bacon' },
+              to: { title: 'Fried Chicken' }
+            })
           ])
           .summaries([
             summary('Fresh and Delicious', {
@@ -60,6 +63,12 @@ describe('[builder] *', () => {
       'Lemon Vinaigrette',
       'Ginger Dressing'
     ])
+
+    expect(workbook.sheets[0].relationships.length).toBe(2)
+    expect(workbook.sheets[0].relationships[0].fromTopicId).toBe(workbook.sheets[0].rootTopic?.children[0].id)
+    expect(workbook.sheets[0].relationships[0].toTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].id)
+    expect(workbook.sheets[0].relationships[1].fromTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].children[0].id)
+    expect(workbook.sheets[0].relationships[1].toTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].children[1].id)
   })
 
   it('should throw exception if ref in relationship info is invalid', () => {
@@ -71,7 +80,9 @@ describe('[builder] *', () => {
             topic('Starters').ref('topic:bar')
           ])
         )
-        .relationships([relationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
+        .relationships([
+          relationship('', { from: { ref: 'topic:errorRef' }, to: { ref: 'topic:bar' } })
+        ])
         .build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })

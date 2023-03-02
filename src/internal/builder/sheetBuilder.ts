@@ -14,10 +14,14 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       return this
     },
     build() {
-      const { topic: rootTopic, reference } = rootTopicBuilder?.build() ?? {}
+      const { topic: rootTopic, reference, titleReference } = rootTopicBuilder?.build() ?? {}
       const sheet = new Sheet(title, rootTopic)
       relationshipInfos.forEach(({ title, from, to }) => {
-        sheet.addRelationship(title, reference.fetch(from).id, reference.fetch(to).id)
+        const fromTopicId =
+          'ref' in from ? reference.fetch(from.ref).id : titleReference.fetch(from.title).id
+        const toTopicId =
+          'ref' in to ? reference.fetch(to.ref).id : titleReference.fetch(to.title).id
+        sheet.addRelationship(title, fromTopicId, toTopicId)
       })
       return sheet
     }

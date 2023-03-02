@@ -46,10 +46,12 @@ export function makeTopicBuilder(title: string): TopicBuilder {
     build() {
       const childTopics: Topic[] = []
       const childReferences: Reference<Topic>[] = []
+      const childTitleReferences: Reference<Topic>[] = []
       childBuilders.forEach(builder => {
-        const { topic, reference } = builder.build()
+        const { topic, reference, titleReference } = builder.build()
         childTopics.push(topic)
         childReferences.push(reference)
+        childTitleReferences.push(titleReference)
       })
 
       const attributes: TopicAttributes = {
@@ -69,13 +71,19 @@ export function makeTopicBuilder(title: string): TopicBuilder {
         makeReference<Topic>(attributes?.ref ? { [attributes.ref]: topic } : {}),
         ...childReferences
       ])
+
+      const titleReference = mergeReferences([
+        makeReference<Topic>({ [topic.title]: topic }),
+        ...childTitleReferences
+      ])
+
       summaryInfos.forEach(({ title, from, to }) => {
         const fromIdentifier = typeof from === 'number' ? from : reference.fetch(from).id
         const toIdentifier = typeof to === 'number' ? to : reference.fetch(to).id
         topic.addSummary(title, fromIdentifier, toIdentifier)
       })
 
-      return { topic, reference }
+      return { topic, reference, titleReference }
     }
   }
 }
