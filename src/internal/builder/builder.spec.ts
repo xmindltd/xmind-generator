@@ -35,8 +35,8 @@ describe('[builder] *', () => {
           .relationships([
             relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
             relationship('Special', {
-              from: { title: 'Smoked Bacon' },
-              to: { title: 'Fried Chicken' }
+              from: { topic: 'Smoked Bacon' },
+              to: { topic: 'Fried Chicken' }
             })
           ])
           .summaries([
@@ -65,10 +65,18 @@ describe('[builder] *', () => {
     ])
 
     expect(workbook.sheets[0].relationships.length).toBe(2)
-    expect(workbook.sheets[0].relationships[0].fromTopicId).toBe(workbook.sheets[0].rootTopic?.children[0].id)
-    expect(workbook.sheets[0].relationships[0].toTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].id)
-    expect(workbook.sheets[0].relationships[1].fromTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].children[0].id)
-    expect(workbook.sheets[0].relationships[1].toTopicId).toBe(workbook.sheets[0].rootTopic?.children[1].children[1].id)
+    expect(workbook.sheets[0].relationships[0].fromTopicId).toBe(
+      workbook.sheets[0].rootTopic?.children[0].id
+    )
+    expect(workbook.sheets[0].relationships[0].toTopicId).toBe(
+      workbook.sheets[0].rootTopic?.children[1].id
+    )
+    expect(workbook.sheets[0].relationships[1].fromTopicId).toBe(
+      workbook.sheets[0].rootTopic?.children[1].children[0].id
+    )
+    expect(workbook.sheets[0].relationships[1].toTopicId).toBe(
+      workbook.sheets[0].rootTopic?.children[1].children[1].id
+    )
   })
 
   it('should throw exception if ref in relationship info is invalid', () => {

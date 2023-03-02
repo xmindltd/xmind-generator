@@ -12,7 +12,7 @@ export function topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
 
-export type TopicSelector = { readonly ref: string } | { readonly title: string }
+export type TopicSelector = { readonly ref: RefString } | { readonly topic: RefString }
 
 export function relationship(
   title: string,

@@ -18,9 +18,9 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       const sheet = new Sheet(title, rootTopic)
       relationshipInfos.forEach(({ title, from, to }) => {
         const fromTopicId =
-          'ref' in from ? reference.fetch(from.ref).id : titleReference.fetch(from.title).id
+          'ref' in from ? reference.fetch(from.ref).id : titleReference.fetch(from.topic).id
         const toTopicId =
-          'ref' in to ? reference.fetch(to.ref).id : titleReference.fetch(to.title).id
+          'ref' in to ? reference.fetch(to.ref).id : titleReference.fetch(to.topic).id
         sheet.addRelationship(title, fromTopicId, toTopicId)
       })
       return sheet
