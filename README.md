@@ -11,16 +11,60 @@ An Xmind document is structured like a tree. The root component is called `Workb
 
 - [Install](#Install)
 - [Usage](#usage)
+- [Builders](#builders)
 - [Interface](#interface)
 - [License](#license)
 
-## Install
-This is install information
 ## Usage
 
 **Building document**
 
+```javascript
+// Note: `readImageFile` helper only available in the Node.js runtime
+const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
+const workbook = generateWorkbook(
+  Root('Grill House')
+    .image(image.data, image.type)
+    .children([
+      Topic('Salad')
+        .markers([Marker.Arrow.refresh])
+        .children([
+          Topic('Garden Salad')
+            .ref('topic:baz')
+            .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
+          Topic('Tomato Salad').ref('topic:qux')
+        ])
+        .summaries([Summary('Get 10% off', { from: 'topic:baz', to: 'topic:qux' })]),
+      Topic('Starters')
+        .ref('topic:bar')
+        .note('With free soft drink')
+        .children([
+          Topic('Smoked Bacon').ref('topic:fred'),
+          Topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
+        ])
+    ])
+    .relationships([
+      Relationship('', { from: 'Salad', to: 'topic:bar' }),
+      Relationship('Special', { from: 'topic:fred', to: 'topic:thud' })
+    ])
+    .summaries([Summary('Fresh and Delicious', { from: 'Salad', to: 'topic:bar' })])
+)
+```
+
+**Export and save to local xmind file**
+```javascript
+// Write to local xmind file
+// Note: `saveLocal` helper only available in the Node.js runtime
+helper.saveLocal(workbook, '...path to an existing directory')
+
+// To use in browser javascript runtime, the ArrayBuffer to xmind file can be
+// generate by `archive` method, then download it with `.xmind` file extension
+workbook.archive() // ArrayBuffer of document
+```
+
+**Creating document through `Workbook` instance**<br/>
 After initializing a Workbook instance, you can operate directly on sheets and topics to create a new xmind document
+> Read the [details](#interface).
 
 ```javascript
 const workbook = new Workbook();
@@ -47,41 +91,56 @@ workbook.sheets[0].addRelationship('', topic1.id, topic2.id);
 workbook.sheets[0].addRelationship('Special', subTopic3.id, subTopic4.id);
 ```
 
-**There is also a faster way to build the same document**
+## Builders
 
+Both `Root` and `Topic` builders building a node of the Mindmap structure, while `Root` represents the root node, and connect those nodes via the `children` method.
+
+ ```javascript
+generateWorkbook(
+  Root('Grill House')
+  // give the root node a reference
+  .ref('topic:inf')
+  .children([
+    Topic('Salad'),
+    Topic('Starters')
+  ])
+)
+// For building a multiple sheets structure,
+// passing a array of `Root` builder to `generateWorkbook`
+ ```
+
+Adding markers `.markers(MarkerId[])`<br/>
 ```javascript
-const workbook = builder().create([
-    root('Grill House').children([
-        topic('Salad').ref('topic:foo').markers([Marker.Arrow.refresh]).children([
-            topic('Garden Salad').ref('topic:baz').labels(['Lemon Vinaigrette', 'Ginger Dressing']),
-            topic('Tomato Salad').ref('topic:qux')
-        ]).summaries([
-            summary('Get 10% off', { from: 'topic:baz', to:  'topic:qux' })
-        ]),
-        topic('Starters').ref('topic:bar').note('With free soft drink').children([
-            topic('Smoked Bacon').ref('topic:fred'),
-            topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
-        ]),
-    ]).relationships([
-        relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' }}),
-        relationship('Special', { from: { topic: 'Smoked Bacon' }, to: { topic: 'Fried Chicken' }})
-    ]).summaries([
-        summary('Fresh and Delicious', { from: 'topic:foo', to: 'topic:bar' })
-    ])
-]).build()
+Topic('Salad').markers([Marker.Arrow.refresh, Marker.Task.quarter])
+```
+Define plain note Text. `.note(string)`<br/>
+```javascript
+Topic('Salad').note('This is a note')
 ```
 
-**Export and save to local xmind file**
+Define array of labels. `.labels(string[])`<br/>
 ```javascript
-// Write to local xmind file
-// Note: `saveLocal` helper only available in the Node.js runtime
-helper.saveLocal(workbook, '...path to an existing directory')
-
-// To use in browser javascript runtime, the ArrayBuffer to xmind file can be
-// generate by `archive` method, then download it with `.xmind` file extension
-workbook.archive() // ArrayBuffer of document
+Topic('Salad').labels(['Lemon Vinaigrette', 'Ginger Dressing'])
 ```
 
+Define the topic image `.image(ImageSource, ImageType)`<br/>
+&ensp;ImageSource accept `ArrayBuffer`, `Buffer`, `Blob`, `Uint8Array` and `encoded base64 string`
+```javascript
+Topic('Salad').image('data:image/png;base64,...', 'png')
+```
+
+Apply summaries `.summaries(Summary[])`
+```javascript
+Topic('Grill House').summaries([Summary('summary', { from: 'topic:foo', to: 'topic:bar' })])
+// You can use either reference string or topic title as indicator,
+// and make sure they are unique
+```
+
+Apply relationships `.relationships(Relationship[])`
+```javascript
+// Note: `relationships` method only available on `Root` builder
+Root('Grill House').relationships([Relationship('title', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } })])
+```
 
 ## Interface
 
@@ -99,15 +158,6 @@ A Workbook contains serval sheets which represent mind map panels.
 
 ```javascript
 const sheet = workbook.addSheet('My Sheet');
-```
-
-### Remove a sheet
-Use the sheet `id` to remove the sheet from workbook.
-```javascript
-// Create a worksheet
-const sheet = workbook.addSheet('My Sheet');
-// Remove the worksheet using worksheet id
-workbook.removeSheet(sheet.id)
 ```
 
 **Access sheets**
@@ -165,23 +215,6 @@ const childTopics = topic.children
 childTopics[0] // The first child topic
 ```
 
-### Remove a child Topic
-Use the topic `id` to remove the subtopic from parent topic.
-```javascript
-const topic = sheet.addTopic('Topic 1');
-const childTopic = topic.addTopic('Subtopic 1');
-topic.removeTopic(childTopic.id);
-```
-
-### Query a topic
-Use the `query` method to find a topic through id or a reference string
-```javascript
-const topic = sheet.addTopic('Topic 1', { ref: 'qux' });
-workbook.query(topic.id);
-workbook.query('qux');
-// The `query` method is also available for `Sheet` and `Topic`, only for searching their children
-```
-
 ### Add image to topic
 ```javascript
 topic.addImage('data:image/png;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
@@ -205,15 +238,6 @@ const relationship = sheet.addRelationship('Relationship', topicFoo.id, topicBar
 const relationships = sheet.relationships;
 relationships[0] // The first relationship object
 ```
-### Remove a relationship
-```javascript
-// remove a relationship by its id
-sheet.removeRelationship(relationship.id);
-
-// remove relationships related to a topic
-sheet.removeRelationship(topic.id);
-```
-
 
 ### Apply a summary to Topic
 The `summary` similar to `relationship`, is an object that describe which topics should be summarized
@@ -231,19 +255,10 @@ const summaries = topic.summaries;
 summaries[0] // The first summary object
 ```
 
-### Remove a summary
-```javascript
-// remove a summary by its id
-topic.removeSummary(summary.id);
-// remove summaries of topic related to one of its children
-topic.removeSummary(childTopic.id)
-```
-
 ### Topic attributes
 
 | Attribute | Description                                                                 | Default Value |
 | --------- | ----------------------------------------------------------------------------| ------------- |
-| ref       | The reference string can be used to identify a topic and to query           | `null`        |
 | labels    | Array of labels.                                                            | `[]`          |
 | note      | Plain note text.                                                            | `null`        |
 | markers   | Array of `MarkerId` object.                                                 | `[]`          |
