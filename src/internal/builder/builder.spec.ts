@@ -33,10 +33,10 @@ describe('[builder] *', () => {
               ])
           ])
           .relationships([
-            relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
+            relationship('', { from: 'topic:foo', to: 'topic:bar' }),
             relationship('Special', {
-              from: { topic: 'Smoked Bacon' },
-              to: { topic: 'Fried Chicken' }
+              from: 'Smoked Bacon',
+              to: 'Fried Chicken'
             })
           ])
           .summaries([
@@ -88,9 +88,7 @@ describe('[builder] *', () => {
             topic('Starters').ref('topic:bar')
           ])
         )
-        .relationships([
-          relationship('', { from: { ref: 'topic:errorRef' }, to: { ref: 'topic:bar' } })
-        ])
+        .relationships([relationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
         .build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })

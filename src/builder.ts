@@ -12,11 +12,9 @@ export function topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
 
-export type TopicSelector = { readonly ref: RefString } | { readonly topic: RefString }
-
 export function relationship(
   title: string,
-  attributes: { from: TopicSelector; to: TopicSelector }
+  attributes: { from: string; to: string }
 ): RelationshipInfo {
   return { title, from: attributes.from, to: attributes.to }
 }
@@ -87,8 +85,8 @@ export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootB
 
 export type RelationshipInfo = {
   title: string
-  from: TopicSelector
-  to: TopicSelector
+  from: string
+  to: string
 }
 export type SummaryInfo = {
   title: string
@@ -106,7 +104,7 @@ interface BaseTopicBuilder<T> {
   summaries: (summaries: ReadonlyArray<SummaryInfo>) => T
 }
 export interface TopicBuilder extends BaseTopicBuilder<TopicBuilder> {
-  build: () => { topic: Topic; reference: Reference<Topic>; titleReference: Reference<Topic> }
+  build: () => { topic: Topic; reference: Reference<Topic> }
 }
 
 export interface RootBuilder extends BaseTopicBuilder<RootBuilder> {

@@ -8,18 +8,17 @@ describe('write xmind file', () => {
     const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
     const workbook = generateWorkbook(
       Root('Grill House')
-        .ref('topic:inf')
         .image(image.data, image.type)
         .children([
           Topic('Salad')
-            .ref('topic:foo')
             .markers([Marker.Arrow.refresh])
             .children([
               Topic('Garden Salad')
                 .ref('topic:baz')
                 .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
               Topic('Tomato Salad').ref('topic:qux')
-            ]),
+            ])
+            .summaries([Summary('Get 10% off', { from: 'topic:baz', to: 'topic:qux' })]),
           Topic('Starters')
             .ref('topic:bar')
             .note('With free soft drink')
@@ -29,10 +28,10 @@ describe('write xmind file', () => {
             ])
         ])
         .relationships([
-          Relationship('', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } }),
-          Relationship('Special', { from: { ref: 'topic:fred'}, to: { ref: 'topic:thud' } })
+          Relationship('', { from: 'Salad', to: 'topic:bar' }),
+          Relationship('Special', { from: 'topic:fred', to: 'topic:thud' })
         ])
-        .summaries([Summary('Fresh and Delicious', { from: 'topic:foo', to: 'topic:bar' })])
+        .summaries([Summary('Fresh and Delicious', { from: 'Salad', to: 'topic:bar' })])
     )
     await helper.saveLocal(workbook, path.resolve(__dirname))
     expect(existsSync(path.resolve(__dirname, 'Grill House.xmind'))).toBe(true)
