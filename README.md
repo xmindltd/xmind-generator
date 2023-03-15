@@ -1,6 +1,6 @@
 # xmind-generator
 
-`xmind-generator` is a javascript module that creates mind maps and generate Xmind files in the same manner as Xmind UI applications.
+`xmind-generator` is a javascript module that creates mind maps and generates Xmind files in the same manner as Xmind UI applications.
 
 It may be helpful to know a few basic concepts before using this module:<br>
 An Xmind document is structured like a tree. The root component is called `Workbook`, which contains several sheets representing mind map panels. `Sheet` contain a `Root Topic` with possibly many child topics, and also that each child topic can be treated like the root of its own children.
@@ -11,8 +11,8 @@ An Xmind document is structured like a tree. The root component is called `Workb
 
 - [Install](#Install)
 - [Usage](#usage)
-- [Builders](#builders)
-- [Interface](#interface)
+- [Builder API](#builder-api)
+- [Imperative API](#imperative-api)
 - [License](#license)
 
 ## Usage
@@ -91,9 +91,9 @@ workbook.sheets[0].addRelationship('', topic1.id, topic2.id);
 workbook.sheets[0].addRelationship('Special', subTopic3.id, subTopic4.id);
 ```
 
-## Builders
+## Builder API
 
-Both `Root` and `Topic` builders building a node of the Mindmap structure, while `Root` represents the root node, and connect those nodes via the `children` method.
+Both `Root` and `Topic` builders build a node of the Mindmap structure, while `Root` represents the root node, and connects other nodes via the `children` method.
 
  ```javascript
 generateWorkbook(
@@ -106,10 +106,10 @@ generateWorkbook(
   ])
 )
 // For building a multiple sheets structure,
-// passing a array of `Root` builder to `generateWorkbook`
+// passing an array of `Root` builder to `generateWorkbook`
  ```
 
-Adding markers `.markers(MarkerId[])`<br/>
+Define markers `.markers(MarkerId[])`<br/>
 ```javascript
 Topic('Salad').markers([Marker.Arrow.refresh, Marker.Task.quarter])
 ```
@@ -139,10 +139,10 @@ Topic('Grill House').summaries([Summary('summary', { from: 'topic:foo', to: 'top
 Apply relationships `.relationships(Relationship[])`
 ```javascript
 // Note: `relationships` method only available on `Root` builder
-Root('Grill House').relationships([Relationship('title', { from: { ref: 'topic:foo' }, to: { ref: 'topic:bar' } })])
+Root('Grill House').relationships([Relationship('title', { from: 'topic:foo', to: 'topic:bar' })])
 ```
 
-## Interface
+## Imperative API
 
 ### Create a Xmind Workbook
 
@@ -162,10 +162,10 @@ const sheet = workbook.addSheet('My Sheet');
 
 **Access sheets**
 ```javascript
-// access sheets array in creation order
+// Access sheets array in creation order
 const sheets = workbook.sheets;
 sheets[0]; // the first sheet
-// Or just iterator all sheets by workbook.sheets.forEach
+// Or just iterate all sheets by workbook.sheets.forEach
 ```
 
 ### Add root topic
@@ -219,7 +219,7 @@ childTopics[0] // The first child topic
 ```javascript
 topic.addImage('data:image/png;base64,...', 'png') // accept ArrayBuffer, Buffer, Blob, Uint8Array and encoded base64 string
 
-// For Node.js runtime, a `readImageFile` helper is ready to use
+// For Node.js runtime, `readImageFile` helper is ready to use
 const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
 topic.addImage(image.data, image.type)
 ```
