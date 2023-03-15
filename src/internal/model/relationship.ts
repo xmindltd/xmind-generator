@@ -5,13 +5,13 @@ export type RelationshipId = string
 export class Relationship {
   readonly id: RelationshipId
   readonly title: string
-  readonly fromTopicId: string
-  readonly toTopicId: string
+  readonly fromTopicId: TopicId
+  readonly toTopicId: TopicId
 
-  constructor(title: string, fromTopicId: TopicId, toTopicId: TopicId) {
+  constructor(title: string, from: TopicId, to: TopicId) {
     this.id = uuid()
     this.title = title
-    this.fromTopicId = fromTopicId
-    this.toTopicId = toTopicId
+    this.fromTopicId = from
+    this.toTopicId = to
   }
 }

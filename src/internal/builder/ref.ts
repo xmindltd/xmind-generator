@@ -1,16 +1,16 @@
-import { Topic, RefString } from '../model/topic'
+import { RefString, TopicId } from '../model/topic'
 
-export type Refs<T> = Record<RefString, T>
+export type Refs<T> = Record<RefString | TopicId, T>
 
 export interface Reference<T> {
   refs: Refs<T>
-  fetch: (ref: RefString) => T
+  fetch: (ref: RefString | TopicId) => T
 }
 
 export function makeReference<T>(refs: Refs<T>): Reference<T> {
   return {
     refs,
-    fetch(ref: RefString) {
+    fetch(ref: RefString | TopicId) {
       if (typeof this.refs[ref] === 'undefined') {
         throw new Error(`Missing Ref "${ref}"`)
       }

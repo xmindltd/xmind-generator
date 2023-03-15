@@ -1,13 +1,42 @@
-import { Topic } from '../model/topic'
-import { SummaryInfo, TopicBuilder, TopicBuilderAttributes } from '../../builder'
+import { RefString, Topic, TopicAttributes, TopicImageData } from '../model/topic'
+import { SummaryInfo, TopicBuilder } from '../../builder'
 import { makeReference, mergeReferences, Reference } from './ref'
+import { ImageSource, ImageType } from '../storage'
+import { MarkerId } from '../marker'
 
-export function makeTopicBuilder(title: string, attributes?: TopicBuilderAttributes): TopicBuilder {
+export function makeTopicBuilder(title: string): TopicBuilder {
+  let _ref: RefString | undefined = undefined
+  let _image: TopicImageData | undefined = undefined
+  let _note: string | undefined = undefined
+  let _markers: Array<MarkerId> = []
+  let _labels: Array<string> = []
+
   const childBuilders: Array<TopicBuilder> = []
   const summaryInfos: Array<SummaryInfo> = []
+
   return {
+    ref(ref: RefString) {
+      _ref = ref
+      return this
+    },
     children(builders: ReadonlyArray<TopicBuilder>) {
       childBuilders.push(...builders)
+      return this
+    },
+    image(data: ImageSource, type: ImageType) {
+      _image = { data, type }
+      return this
+    },
+    note(newNote: string) {
+      _note = newNote
+      return this
+    },
+    labels(labels: ReadonlyArray<string>) {
+      _labels.push(...labels)
+      return this
+    },
+    markers(markers: ReadonlyArray<MarkerId>) {
+      _markers.push(...markers)
       return this
     },
     summaries(summaries: ReadonlyArray<SummaryInfo>) {
@@ -23,13 +52,29 @@ export function makeTopicBuilder(title: string, attributes?: TopicBuilderAttribu
         childReferences.push(reference)
       })
 
+      const attributes: TopicAttributes = {
+        ref: _ref,
+        note: _note,
+        markers: _markers,
+        labels: _labels
+      }
+
       const topic = new Topic(title, attributes, childTopics)
+
+      if (_image) {
+        topic.addImage(_image.data, _image.type)
+      }
+
       const reference = mergeReferences([
         makeReference<Topic>(attributes?.ref ? { [attributes.ref]: topic } : {}),
+        makeReference<Topic>({ [topic.title]: topic }),
         ...childReferences
       ])
-      summaryInfos.forEach(({ title, startRef, endRef }) => {
-        topic.addSummary(title, reference.fetch(startRef).id, reference.fetch(endRef).id)
+
+      summaryInfos.forEach(({ title, from, to }) => {
+        const fromIdentifier = typeof from === 'number' ? from : reference.fetch(from).id
+        const toIdentifier = typeof to === 'number' ? to : reference.fetch(to).id
+        topic.addSummary(title, fromIdentifier, toIdentifier)
       })
 
       return { topic, reference }
