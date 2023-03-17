@@ -7,6 +7,7 @@ import { Workbook } from './internal/model/workbook'
 import { Reference } from './internal/builder/ref'
 import { ImageSource, ImageType } from './internal/storage'
 import { MarkerId } from './internal/marker'
+import { archive } from './internal/archive'
 
 export function topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
@@ -37,6 +38,10 @@ export function root(title: string): RootBuilder {
   return {
     ref(ref: RefString) {
       topicBuilder.ref(ref)
+      return this
+    },
+    sheetTitle(title: string) {
+      sheetBuilder.title(title)
       return this
     },
     children(topicBuilders: ReadonlyArray<TopicBuilder>) {
@@ -77,10 +82,16 @@ export function builder() {
   return makeWorkbookBuilder()
 }
 
-export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder): Workbook {
-  return builder()
+export function generateWorkbook(
+  rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder
+): WorkbookDocument {
+  const workbook = builder()
     .create(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
     .build()
+  return {
+    workbook,
+    archive: () => archive(workbook)
+  }
 }
 
 export type RelationshipInfo = {
@@ -92,6 +103,11 @@ export type SummaryInfo = {
   title: string
   from: string | number
   to: string | number
+}
+
+export type WorkbookDocument = {
+  workbook: Workbook
+  archive(): Promise<ArrayBuffer>
 }
 
 interface BaseTopicBuilder<T> {
@@ -108,12 +124,14 @@ export interface TopicBuilder extends BaseTopicBuilder<TopicBuilder> {
 }
 
 export interface RootBuilder extends BaseTopicBuilder<RootBuilder> {
+  sheetTitle: (title: string) => this
   relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
   build: () => Sheet
 }
 export interface SheetBuilder {
   rootTopic: (topicBuilder: TopicBuilder) => this
   relationships: (relationships: ReadonlyArray<RelationshipInfo>) => this
+  title: (sheetTitle: string) => this
   build: () => Sheet
 }
 export interface WorkbookBuilder {

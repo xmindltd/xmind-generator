@@ -1,12 +1,11 @@
-import { Workbook } from './internal/model/workbook'
 import { writeFile } from 'fs'
-import { archive } from './internal/archive'
 import { readFile } from 'fs/promises'
 import { ImageType } from './internal/storage'
+import { WorkbookDocument } from './builder'
 
-export async function saveLocal(workbook: Workbook, pathToDirectory: string) {
-  const savePath = suggestFilePath(workbook, pathToDirectory)
-  const buffer = await archive(workbook)
+export async function saveLocal(document: WorkbookDocument, pathToDirectory: string) {
+  const savePath = suggestFilePath(document, pathToDirectory)
+  const buffer = await document.archive()
   writeFile(savePath, Buffer.from(buffer), err => {
     if (err) throw err
   })
@@ -18,7 +17,8 @@ export async function readImageFile(filePath: string): Promise<{ data: Buffer; t
   return { data: imageData, type: ext }
 }
 
-function suggestFilePath(workbook: Workbook, pathToDirectory: string): string {
+function suggestFilePath(document: WorkbookDocument, pathToDirectory: string): string {
+  const workbook = document?.workbook
   const name = workbook?.sheets?.[0]?.rootTopic?.title ?? workbook?.sheets?.[0]?.title ?? 'map'
   if (pathToDirectory.endsWith('/')) {
     pathToDirectory = pathToDirectory.slice(0, -1)

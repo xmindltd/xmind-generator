@@ -13,6 +13,10 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       relationshipInfos.push(...relationships)
       return this
     },
+    title(sheetTitle: string) {
+      title = sheetTitle
+      return this
+    },
     build() {
       const { topic: rootTopic, reference } = rootTopicBuilder?.build() ?? {}
       const sheet = new Sheet(title, rootTopic)
