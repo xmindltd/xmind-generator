@@ -76,34 +76,38 @@ generateWorkbook(
 // passing an array of `Root` builder to `generateWorkbook`
  ```
 
-Define markers `.markers(MarkerId[])`<br/>
+#### `.markers(MarkerId[])`
+
+Define markers.
+
 ```javascript
 Topic('Salad').markers([Marker.Arrow.refresh, Marker.Task.quarter])
 ```
-Define plain note Text. `.note(string)`<br/>
+
+#### `.note(string)`
+Define plain note Text.
 ```javascript
 Topic('Salad').note('This is a note')
 ```
 
-Define array of labels. `.labels(string[])`<br/>
+#### `.labels(string[])`
+Define array of labels.
 ```javascript
 Topic('Salad').labels(['Lemon Vinaigrette', 'Ginger Dressing'])
 ```
-
-Define the topic image `.image(ImageSource, ImageType)`<br/>
-&ensp;ImageSource accept `ArrayBuffer`, `Buffer`, `Blob`, `Uint8Array` and `encoded base64 string`
+#### `.image(ImageSource, ImageType)`
+Define the topic image. ImageSource accept `ArrayBuffer`, `Buffer`, `Blob`, `Uint8Array` and `base64 encoded string`.
 ```javascript
 Topic('Salad').image('data:image/png;base64,...', 'png')
 ```
-
-Apply summaries `.summaries(Summary[])`
+#### `.summaries(Summary[])`
+Apply summaries.
 ```javascript
 Topic('Grill House').summaries([Summary('summary', { from: 'topic:foo', to: 'topic:bar' })])
-// You can use either reference string or topic title as indicator,
-// and make sure they are unique
+// You can use either reference string or topic title as indicator, and make sure they are unique.
 ```
-
-Apply relationships `.relationships(Relationship[])`
+#### `.relationships(Relationship[])`
+Apply relationships.
 ```javascript
 // Note: `relationships` method only available on `Root` builder
 Root('Grill House').relationships([Relationship('title', { from: 'topic:foo', to: 'topic:bar' })])
