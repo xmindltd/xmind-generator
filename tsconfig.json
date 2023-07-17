@@ -20,7 +20,9 @@
     "lib": [
       "ES2015",
       "ES2016",
-      "ES2017"
+      "ES2017",
+      "dom",
+      "esnext.asynciterable"
     ],
     "newLine": "lf",
     /* Type Checking */
