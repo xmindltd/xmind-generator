@@ -1,6 +1,7 @@
 {
   "name": "xmind-generator",
   "version": "0.0.0",
+  "type": "module",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "typings": "./lib/esm/index.d.ts",
