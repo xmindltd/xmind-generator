@@ -6,7 +6,7 @@ import { Topic, Root, Relationship, Summary, generateWorkbook, Marker, helper } 
 describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
     const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
-    const workbook = generateWorkbook(
+    const document = generateWorkbook(
       Root('Grill House')
         .image(image.data, image.type)
         .children([
@@ -33,7 +33,7 @@ describe('write xmind file', () => {
         ])
         .summaries([Summary('Fresh and Delicious', { from: 'Salad', to: 'topic:bar' })])
     )
-    await helper.saveLocal(workbook, path.resolve(__dirname))
+    await helper.saveLocal(document, path.resolve(__dirname))
     expect(existsSync(path.resolve(__dirname, 'Grill House.xmind'))).toBe(true)
   })
 })

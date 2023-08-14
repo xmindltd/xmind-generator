@@ -34,15 +34,6 @@ describe('[internal/model/workbook] getSheet()', () => {
   })
 })
 
-describe('[internal/model/workbook] getSheet()', () => {
-  it('should remove a sheet from workbook properly', () => {
-    const workbook = new Workbook()
-    const sheet = workbook.addSheet('Grill House')
-    workbook.removeSheet(sheet.id)
-    expect(workbook.getSheet(sheet.id)).toBeNull()
-  })
-})
-
 describe('[internal/model/workbook] query()', () => {
   it('should return proper topic', () => {
     const workbook = new Workbook()

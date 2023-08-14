@@ -1,3 +1,6 @@
+// This file contains the Marker and MarkerId classes, which are used to define markers for XMind.
+// The Marker class contains static properties for different types of markers, such as Priority, Smiley, Task, Flag, Star, People, Arrow, Month, and Week.
+// To use a marker, simply reference the appropriate property of the Marker class, such as Marker.Priority.p1.
 export class MarkerId {
   readonly id: `${string}-${string}`
   constructor(id: `${string}-${string}`) {
