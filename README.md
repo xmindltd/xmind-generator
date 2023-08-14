@@ -24,6 +24,7 @@ const workbook = generateWorkbook(
         .markers([Marker.Arrow.refresh])
         .children([
           Topic('Garden Salad')
+            // Note: ref (aka "reference") is only used in building procedure, is not saved in exported Xmind file.
             .ref('topic:baz')
             .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
           Topic('Tomato Salad').ref('topic:qux')
@@ -65,7 +66,7 @@ The `Root` and `Topic` builders create nodes in the mind map structure. The `Roo
  ```javascript
 generateWorkbook(
   Root('Grill House')
-  // Give the root node a reference
+  // Give the node a reference
   .ref('topic:inf')
   .children([
     Topic('Salad'),
