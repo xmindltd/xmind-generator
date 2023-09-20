@@ -33,7 +33,7 @@ describe('write xmind file', () => {
         ])
         .summaries([Summary('Fresh and Delicious', { from: 'Salad', to: 'topic:bar' })])
     )
-    await helper.saveLocal(document, path.resolve(__dirname))
+    await helper.saveLocal(document, path.resolve(__dirname, 'Grill House.xmind'))
     expect(existsSync(path.resolve(__dirname, 'Grill House.xmind'))).toBe(true)
   })
 })

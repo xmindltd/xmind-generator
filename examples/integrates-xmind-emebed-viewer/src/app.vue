@@ -48,7 +48,7 @@ const generateXmindFileOne = async () => {
 
 const generateXmindFileTwo = async () => {
   const imageCoffeeBuffer = await fetch('coffee.svg').then(response => response.arrayBuffer())
-  const imageClockBuffer = await fetch('coffee.svg').then(response => response.arrayBuffer())
+  const imageClockBuffer = await fetch('clock.svg').then(response => response.arrayBuffer())
   return generateWorkbook(
     Root('Weekly Report').children([
       Topic("What  I've Done This Week")
