@@ -58,10 +58,6 @@ helper.saveLocal(workbook, '...path to a file with the `.xmind` file extension')
 workbook.archive() // ArrayBuffer of document
 ```
 
-### Example
-
-- [The integration of xmind-generator with xmind-embed-viewer](examples/integrates-xmind-emebed-viewer/README.md)
-
 ## Interface
 
 Before using this module, it's helpful to understand the basic concepts of Xmind documents. These documents are structured as trees with a `Workbook` as the root component, containing multiple sheets representing mind map panels. Each sheet has a root `Topic` and child topics, which can be treated as the root of their own children.
@@ -118,6 +114,11 @@ Applies relationships.
 // Note: `relationships` method is only available on the `Root` builder
 Root('Grill House').relationships([Relationship('title...', { from: 'topic:foo', to: 'topic:bar' })])
 ```
+
+### Example
+
+- [The integration of xmind-generator with xmind-embed-viewer](examples/integrates-xmind-emebed-viewer/README.md)
+
 
 
 ## License
