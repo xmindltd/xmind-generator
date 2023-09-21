@@ -1,9 +1,4 @@
-export {
-  root as Root,
-  topic as Topic,
-  relationship as Relationship,
-  summary as Summary,
-  generateWorkbook,
+export type {
   RelationshipInfo,
   SummaryInfo,
   TopicBuilder,
@@ -11,5 +6,13 @@ export {
   WorkbookBuilder,
   WorkbookDocument
 } from './builder'
+export type { TopicImageData } from './internal/model/topic'
 export { Marker } from './internal/marker'
-export { TopicImageData } from './internal/model/topic'
+export {
+  root as Root,
+  topic as Topic,
+  relationship as Relationship,
+  summary as Summary,
+  generateWorkbook
+} from './builder'
+export * as helper from './helper'

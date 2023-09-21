@@ -2,9 +2,19 @@
   "name": "xmind-generator",
   "version": "0.0.0",
   "type": "module",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
-  "typings": "./lib/esm/index.d.ts",
+  "engines": {
+    "node": ">=16"
+  },
+  "types": "./lib/esm/exports.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/esm/exports.js",
+      "require": "./lib/cjs/exports.cjs"
+    }
+  },
+  "module": "./lib/esm/exports.js",
+  "typings": "./lib/esm/exports.d.ts",
+  "sideEffects": false,
   "files": [
     "lib",
     "package.json",
@@ -25,12 +35,12 @@
     "xmind-package"
   ],
   "author": "Xmind Ltd.",
+  "description": "A javascript module that creates mindmaps and generates Xmind files.",
   "license": "MIT",
   "scripts": {
-    "build-esm": "tsc --project tsconfig.json",
-    "build-cjs": "tsc --project tsconfig-cjs.json",
+    "build": "yarn clean && unbuild && yarn postbuild",
+    "postbuild": "rimraf -g lib/**/*.spec.js lib/**/*.spec.d.ts lib/**/*.spec.cjs",
     "clean": "rm -rf lib",
-    "build": "yarn prettier && yarn clean && yarn build-esm && yarn build-cjs",
     "test": "vitest",
     "prettier": "prettier --write \"src/**/*.ts\""
   },
@@ -39,9 +49,19 @@
     "prettier": "^2.8.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4",
-    "vitest": "^0.27.1"
-  },
-  "dependencies": {
+    "vitest": "^0.27.1",
+    "unbuild": "^2.0.0",
+    "rimraf": "^5.0.1",
     "jszip": "3.10.1"
-  }
+  },
+  "maintainers": [
+    {
+      "name": "ray",
+      "email": "raywang@xmind.net"
+    },
+    {
+      "name": "synix",
+      "email": "synix@xmind.net"
+    }
+  ]
 }

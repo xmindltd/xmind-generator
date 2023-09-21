@@ -1,7 +1,15 @@
 import path from 'path'
 import { existsSync } from 'fs'
 import { describe, it, expect } from 'vitest'
-import { Topic, Root, Relationship, Summary, generateWorkbook, Marker, helper } from '../src'
+import {
+  Topic,
+  Root,
+  Relationship,
+  Summary,
+  generateWorkbook,
+  Marker,
+  helper
+} from '../src/exports'
 
 describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
