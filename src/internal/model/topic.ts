@@ -1,6 +1,6 @@
 import { uuid } from '../common'
-import { MarkerId } from '../marker'
-import { ImageSource, ImageType } from '../storage'
+import type { MarkerId } from '../marker'
+import type { ImageSource, ImageType } from '../storage'
 import { Summary } from './summary'
 
 export type TopicId = string

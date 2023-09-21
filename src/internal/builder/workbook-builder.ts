@@ -1,4 +1,4 @@
-import { RootBuilder, SheetBuilder, WorkbookBuilder } from '../../builder'
+import type { RootBuilder, SheetBuilder, WorkbookBuilder } from '../../builder'
 import { Workbook } from '../model/workbook'
 
 export function makeWorkbookBuilder(): WorkbookBuilder {

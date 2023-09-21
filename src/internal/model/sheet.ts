@@ -1,5 +1,5 @@
 import { uuid } from '../common'
-import { Topic, TopicId } from './topic'
+import { Topic, type TopicId } from './topic'
 import { Relationship } from './relationship'
 
 export type SheetId = string

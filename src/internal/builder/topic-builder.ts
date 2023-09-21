@@ -1,8 +1,8 @@
-import { RefString, Topic, TopicAttributes, TopicImageData } from '../model/topic'
-import { SummaryInfo, TopicBuilder } from '../../builder'
-import { makeReference, mergeReferences, Reference } from './ref'
-import { ImageSource, ImageType } from '../storage'
-import { MarkerId } from '../marker'
+import { type RefString, Topic, type TopicAttributes, type TopicImageData } from '../model/topic'
+import type { SummaryInfo, TopicBuilder } from '../../builder'
+import { makeReference, mergeReferences, type Reference } from './ref'
+import type { ImageSource, ImageType } from '../storage'
+import type { MarkerId } from '../marker'
 
 export function makeTopicBuilder(title: string): TopicBuilder {
   let _ref: RefString | undefined = undefined

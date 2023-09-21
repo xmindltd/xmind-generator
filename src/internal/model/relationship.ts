@@ -1,5 +1,5 @@
 import { uuid } from '../common'
-import { TopicId } from './topic'
+import type { TopicId } from './topic'
 
 export type RelationshipId = string
 export class Relationship {

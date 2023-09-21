@@ -1,4 +1,4 @@
-import { RefString, TopicId } from '../model/topic'
+import type { RefString, TopicId } from '../model/topic'
 
 export type Refs<T> = Record<RefString | TopicId, T>
 
