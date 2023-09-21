@@ -1,5 +1,5 @@
-import { Sheet, SheetId } from './sheet'
-import { Topic, TopicId } from './topic'
+import { Sheet, type SheetId } from './sheet'
+import type { Topic, TopicId } from './topic'
 export class Workbook {
   private _sheets: Sheet[]
 

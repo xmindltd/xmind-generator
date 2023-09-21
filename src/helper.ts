@@ -1,7 +1,7 @@
 import { writeFile } from 'fs'
 import { readFile } from 'fs/promises'
-import { ImageType } from './internal/storage'
-import { WorkbookDocument } from './builder'
+import type { ImageType } from './internal/storage'
+import type { WorkbookDocument } from './builder'
 
 export async function saveLocal(document: WorkbookDocument, pathToFile: string) {
   const buffer = await document.archive()

@@ -1,9 +1,9 @@
 import { uuid } from './common'
-import { Relationship } from './model/relationship'
-import { Sheet } from './model/sheet'
-import { Summary } from './model/summary'
-import { Topic, TopicImageData } from './model/topic'
-import { Workbook } from './model/workbook'
+import type { Relationship } from './model/relationship'
+import type { Sheet } from './model/sheet'
+import type { Summary } from './model/summary'
+import type { Topic, TopicImageData } from './model/topic'
+import type { Workbook } from './model/workbook'
 
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>
 

@@ -1,5 +1,5 @@
 import { Sheet } from '../model/sheet'
-import { RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
+import { type RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
 
 export function makeSheetBuilder(title?: string): SheetBuilder {
   let rootTopicBuilder: TopicBuilder

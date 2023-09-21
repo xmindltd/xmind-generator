@@ -1,12 +1,12 @@
 import { makeSheetBuilder } from './internal/builder/sheet-builder'
 import { makeTopicBuilder } from './internal/builder/topic-builder'
 import { makeWorkbookBuilder } from './internal/builder/workbook-builder'
-import { RefString, Topic } from './internal/model/topic'
-import { Sheet } from './internal/model/sheet'
-import { Workbook } from './internal/model/workbook'
-import { Reference } from './internal/builder/ref'
-import { ImageSource, ImageType } from './internal/storage'
-import { MarkerId } from './internal/marker'
+import type { RefString, Topic } from './internal/model/topic'
+import type { Sheet } from './internal/model/sheet'
+import type { Workbook } from './internal/model/workbook'
+import type { Reference } from './internal/builder/ref'
+import type { ImageSource, ImageType } from './internal/storage'
+import type { MarkerId } from './internal/marker'
 import { archive } from './internal/archive'
 
 export function topic(title: string): TopicBuilder {

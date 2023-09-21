@@ -1,5 +1,5 @@
 import jszip from 'jszip'
-import { Workbook } from './model/workbook'
+import type { Workbook } from './model/workbook'
 import { asJSONObject, serializeWorkbook } from './serializer'
 import { makeImageResourceStorage } from './storage'
 
