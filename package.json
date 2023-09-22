@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=14"
   },
   "types": "./lib/esm/exports.d.ts",
   "exports": {
@@ -18,7 +18,8 @@
   "files": [
     "lib",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   ],
   "author": "Xmind Ltd.",
   "description": "A javascript module that creates mindmaps and generates Xmind files.",
+  "homepage": "https://github.com/xmindltd/xmind-generator#readme",
   "license": "MIT",
   "scripts": {
     "build": "yarn clean && unbuild && yarn postbuild",
@@ -62,6 +64,10 @@
     {
       "name": "synix",
       "email": "synix@xmind.net"
+    },
+    {
+      "name": "xmind_official",
+      "email": "npm@xmind.net"
     }
   ]
 }
