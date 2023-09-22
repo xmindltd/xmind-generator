@@ -12,7 +12,7 @@
 
 ## Usage
 
-**Building document**
+**Build document**
 
 ```javascript
 // Note: `readImageFile` helper is only available in the Node.js runtime
@@ -78,7 +78,7 @@ generateWorkbook(
 // pass an array of `Root` builders to `generateWorkbook`
  ```
 
-#### `.markers(MarkerId[])`
+### `.markers(MarkerId[])`
 
 Define markers.
 
@@ -86,36 +86,36 @@ Define markers.
 Topic('Salad').markers([Marker.Arrow.refresh, Marker.Task.quarter])
 ```
 
-#### `.note(string)`
+### `.note(string)`
 Defines plain note Text.
 ```javascript
 Topic('Salad').note('This is a note')
 ```
 
-#### `.labels(string[])`
+### `.labels(string[])`
 Define array of labels.
 ```javascript
 Topic('Salad').labels(['Lemon Vinaigrette', 'Ginger Dressing'])
 ```
-#### `.image(ImageSource, ImageType)`
+### `.image(ImageSource, ImageType)`
 Defines an image for the topic. `ImageSource` can accept `ArrayBuffer`, `Buffer`, `Blob`, `Uint8Array` and `base64 encoded string`.
 ```javascript
 Topic('Salad').image('data:image/png;base64,...', 'png')
 ```
-#### `.summaries(Summary[])`
+### `.summaries(Summary[])`
 Applies summaries.
 ```javascript
 // You can use either a reference string or topic title as an indicator, and make sure they are unique.
 Topic('Grill House').summaries([Summary('summary title..', { from: 'topic:foo', to: 'topic:bar' })])
 ```
-#### `.relationships(Relationship[])`
+### `.relationships(Relationship[])`
 Applies relationships.
 ```javascript
 // Note: `relationships` method is only available on the `Root` builder
 Root('Grill House').relationships([Relationship('title...', { from: 'topic:foo', to: 'topic:bar' })])
 ```
 
-### Example
+## Example
 
 - [The integration of xmind-generator with xmind-embed-viewer](examples/integrates-xmind-emebed-viewer/README.md)
 
