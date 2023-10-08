@@ -11,7 +11,7 @@ export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
   const content = JSON.stringify(serializedWorkbook)
   zip.file('content.json', content)
 
-  const metadata = asJSONObject({ creator: { name: 'xmind-generator' } })
+  const metadata = asJSONObject({ creator: { name: 'xmind-generator' }, dataStructureVersion: '2' })
   zip.file('metadata.json', JSON.stringify(metadata))
 
   const resources = zip.folder('resources')

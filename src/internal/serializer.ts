@@ -61,9 +61,7 @@ export function serializeTopic(
   const obj: SerializedObject = {
     id: topic.id,
     class: 'topic',
-    title: topic.title ?? '',
-    children: { attached: [], summary: [] },
-    summaries: []
+    title: topic.title ?? ''
   }
   const { note, labels, image, markers, summaries } = topic
 
@@ -73,7 +71,9 @@ export function serializeTopic(
     }
   }
 
-  obj.labels = labels as string[]
+  if (labels.length > 0) {
+    obj.labels = [...labels]
+  }
 
   if (topic.children.length > 0) {
     obj.children = {
@@ -90,22 +90,29 @@ export function serializeTopic(
     }
   }
 
-  obj.markers = markers.length > 0 ? markers.map(marker => ({ markerId: marker.id })) : []
+  if (markers.length > 0) {
+    obj.markers = markers.map(marker => ({ markerId: marker.id }))
+  }
 
   if (summaries.length > 0) {
     const summaryTopics: Array<JSONObject> = []
     summaries.forEach(summary => {
       const serializedSummary = serializeSummary(topic, summary)
-      if (serializedSummary) {
-        const topicId = uuid()
-        obj.summaries = [
-          ...asJSONArray(obj.summaries),
-          asJSONObject({ ...serializedSummary, topicId })
-        ]
-        summaryTopics.push(asJSONObject({ id: topicId, class: 'topic', title: summary.title }))
-      }
+      if (!serializedSummary) return
+      const topicId = uuid()
+      obj.summaries = [
+        ...asJSONArray(obj.summaries ?? []),
+        asJSONObject({ ...serializedSummary, topicId })
+      ]
+      summaryTopics.push(asJSONObject({ id: topicId, class: 'topic', title: summary.title }))
     })
-    obj.children = { ...asJSONObject(obj.children), summary: summaryTopics }
+
+    if (summaryTopics.length > 0) {
+      obj.children = {
+        ...asJSONObject(obj.children ?? {}),
+        summary: summaryTopics
+      }
+    }
   }
 
   return obj
