@@ -15,6 +15,7 @@
 **Build document**
 
 ```javascript
+import { Topic, Root, Relationship, Summary, Marker, generateWorkbook, helper } from 'xmind-generator'
 // Note: `readImageFile` helper is only available in the Node.js runtime
 const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
 const workbook = generateWorkbook(
@@ -60,7 +61,7 @@ workbook.archive() // ArrayBuffer of document
 
 ## Interface
 
-An Xmind document is a tree-like structure with a `Workbook` as the root component, containing multiple sheets representing mind map panels. Each sheet has a root `Topic` and child topics, which can be treated as the root of their own children.
+The main component of an Xmind document is a `Workbook` object, which contains multiple mind maps. Each mind map is formed as a hierarchical tree structure consisting of a set of `Topic` objects as its nodes, where a `Root` object represents the root node as well as the containing mind map.
 
 The `Root` and `Topic` builders create nodes in the mind map structure. The `Root` builder specifically builds the root node, which connects to other nodes through the `children` method.
 
@@ -117,7 +118,7 @@ Root('Grill House').relationships([Relationship('title...', { from: 'topic:foo',
 
 ## Example
 
-- [The integration of xmind-generator with xmind-embed-viewer](examples/integrates-xmind-emebed-viewer/README.md)
+- [The integration of xmind-generator with xmind-embed-viewer](examples/integration-embed-viewer/README.md)
 
 
 
