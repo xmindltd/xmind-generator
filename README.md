@@ -15,10 +15,10 @@
 **Build document**
 
 ```javascript
-import { Topic, Root, Relationship, Summary, Marker, generateWorkbook, helper } from 'xmind-generator'
+import { Topic, Root, Relationship, Summary, Marker, Workbook, helper } from 'xmind-generator'
 // Note: `readImageFile` helper is only available in the Node.js runtime
 const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
-const workbook = generateWorkbook(
+const workbook = Workbook(
   Root('Grill House')
     .image(image.data, image.type)
     .children([
@@ -66,7 +66,7 @@ The main component of an Xmind document is a `Workbook` object, which contains m
 The `Root` and `Topic` builders create nodes in the mind map structure. The `Root` builder specifically builds the root node, which connects to other nodes through the `children` method.
 
  ```javascript
-generateWorkbook(
+Workbook(
   Root('Grill House')
   // Give the node a reference
   .ref('topic:inf')
@@ -76,7 +76,7 @@ generateWorkbook(
   ])
 )
 // For building a multiple sheets structure,
-// pass an array of `Root` builders to `generateWorkbook`
+// pass an array of `Root` builders to `Workbook`
  ```
 
 ### `.markers(MarkerId[])`

@@ -6,7 +6,7 @@ import {
   Root,
   Relationship,
   Summary,
-  generateWorkbook,
+  Workbook,
   Marker,
   helper
 } from '../src/exports'
@@ -14,7 +14,7 @@ import {
 describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
     const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
-    const document = generateWorkbook(
+    const document = Workbook(
       Root('Grill House')
         .image(image.data, image.type)
         .children([

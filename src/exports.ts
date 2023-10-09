@@ -13,6 +13,6 @@ export {
   topic as Topic,
   relationship as Relationship,
   summary as Summary,
-  generateWorkbook
+  generateWorkbook as Workbook
 } from './builder'
 export * as helper from './helper'
