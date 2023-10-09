@@ -9,18 +9,18 @@ import type { ImageSource, ImageType } from './internal/storage'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/archive'
 
-export function topic(title: string): TopicBuilder {
+export function generateTopic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
 
-export function relationship(
+export function generateRelationship(
   title: string,
   attributes: { from: string; to: string }
 ): RelationshipInfo {
   return { title, from: attributes.from, to: attributes.to }
 }
 
-export function summary(
+export function generateSummary(
   title: string,
   attributes: { from: string | number; to: string | number }
 ): SummaryInfo {
@@ -31,7 +31,7 @@ export function sheet(title?: string): SheetBuilder {
   return makeSheetBuilder(title)
 }
 
-export function root(title: string): RootBuilder {
+export function generateRoot(title: string): RootBuilder {
   const sheetBuilder = makeSheetBuilder()
   const topicBuilder = makeTopicBuilder(title)
   sheetBuilder.rootTopic(topicBuilder)
