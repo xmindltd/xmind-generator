@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { root, builder } from '../builder'
+import { generateRoot, builder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
 import { Marker } from './marker'
@@ -9,7 +9,7 @@ import { makeImageResourceStorage } from './storage'
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', () => {
     const workbook = builder()
-      .create([root('Grill House')])
+      .create([generateRoot('Grill House')])
       .build()
     const serializedWorkbook = serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()

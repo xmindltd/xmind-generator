@@ -9,10 +9,10 @@ export type {
 export type { TopicImageData } from './internal/model/topic'
 export { Marker } from './internal/marker'
 export {
-  root as Root,
-  topic as Topic,
-  relationship as Relationship,
-  summary as Summary,
-  generateWorkbook
+  generateRoot as Root,
+  generateTopic as Topic,
+  generateRelationship as Relationship,
+  generateSummary as Summary,
+  generateWorkbook as Workbook
 } from './builder'
 export * as helper from './helper'

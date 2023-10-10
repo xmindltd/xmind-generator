@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue'
-import { Topic, Root, Relationship, Summary, generateWorkbook, Marker } from 'xmind-generator'
+import { Topic, Root, Relationship, Summary, Marker, Workbook } from 'xmind-generator'
 import { XMindEmbedViewer } from 'xmind-embed-viewer'
 
 const embedViewerEl = ref<HTMLElement>()
@@ -19,7 +19,7 @@ const loadXmindFileToViewer = (xmindFile: ArrayBuffer) =>
 
 const generateXmindFileOne = async () => {
   const imageBuffer = await fetch('xmind.jpeg').then(response => response.arrayBuffer())
-  return generateWorkbook(
+  return Workbook(
     Root('Grill House')
       .image(imageBuffer, 'jpeg')
       .children([
@@ -49,7 +49,7 @@ const generateXmindFileOne = async () => {
 const generateXmindFileTwo = async () => {
   const imageCoffeeBuffer = await fetch('coffee.svg').then(response => response.arrayBuffer())
   const imageClockBuffer = await fetch('clock.svg').then(response => response.arrayBuffer())
-  return generateWorkbook(
+  return Workbook(
     Root('Weekly Report').children([
       Topic("What  I've Done This Week")
         .image(imageCoffeeBuffer, 'svg')

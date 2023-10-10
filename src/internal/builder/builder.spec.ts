@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { topic, root, sheet, builder, relationship, summary } from '../../builder'
+import { generateTopic, generateRoot, sheet, builder, generateRelationship, generateSummary } from '../../builder'
 import { Marker } from '../marker'
 import { Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
@@ -10,37 +10,37 @@ describe('[builder] *', () => {
   it('should create a workbook', () => {
     workbook = builder()
       .create([
-        root('Grill House')
+        generateRoot('Grill House')
           .ref('topic:inf')
           .children([
-            topic('Salad')
+            generateTopic('Salad')
               .ref('topic:foo')
               .image('data:image/png;base64,...', 'png')
               .note('This is notes')
               .markers([Marker.Arrow.refresh])
               .children([
-                topic('Garden Salad')
+                generateTopic('Garden Salad')
                   .ref('topic:baz')
                   .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
-                topic('Tomato Salad').ref('topic:qux')
+                generateTopic('Tomato Salad').ref('topic:qux')
               ]),
-            topic('Starters')
+            generateTopic('Starters')
               .ref('topic:bar')
               .note('With free soft drink')
               .children([
-                topic('Smoked Bacon').ref('topic:fred'),
-                topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
+                generateTopic('Smoked Bacon').ref('topic:fred'),
+                generateTopic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
               ])
           ])
           .relationships([
-            relationship('', { from: 'topic:foo', to: 'topic:bar' }),
-            relationship('Special', {
+            generateRelationship('', { from: 'topic:foo', to: 'topic:bar' }),
+            generateRelationship('Special', {
               from: 'Smoked Bacon',
               to: 'Fried Chicken'
             })
           ])
           .summaries([
-            summary('Fresh and Delicious', {
+            generateSummary('Fresh and Delicious', {
               from: 'topic:foo',
               to: 'topic:bar'
             })
@@ -83,12 +83,12 @@ describe('[builder] *', () => {
     expect(() =>
       sheet()
         .rootTopic(
-          topic('root').children([
-            topic('Salad').ref('topic:foo'),
-            topic('Starters').ref('topic:bar')
+          generateTopic('root').children([
+            generateTopic('Salad').ref('topic:foo'),
+            generateTopic('Starters').ref('topic:bar')
           ])
         )
-        .relationships([relationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
+        .relationships([generateRelationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
         .build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })
