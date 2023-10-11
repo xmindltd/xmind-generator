@@ -7,7 +7,7 @@ import type { Workbook } from './internal/model/workbook'
 import type { Reference } from './internal/builder/ref'
 import type { ImageSource, ImageType } from './internal/storage'
 import type { MarkerId } from './internal/marker'
-import { archive } from './internal/archive'
+import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
 
 export function generateTopic(title: string): Omit<TopicBuilder, 'build'> {
@@ -116,14 +116,11 @@ export function builder() {
   return makeWorkbookBuilder()
 }
 
-export function generateWorkbook(
-  rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder
-): WorkbookDocument {
+export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder) {
   const workbook = builder()
     .create(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
     .build()
   return {
-    workbook,
     archive: () => archive(workbook)
   }
 }
@@ -137,11 +134,6 @@ export type SummaryInfo = {
   title: string
   from: string | number
   to: string | number
-}
-
-export type WorkbookDocument = {
-  workbook: Workbook
-  archive(): Promise<ArrayBuffer>
 }
 
 interface BaseTopicBuilder<T> {
