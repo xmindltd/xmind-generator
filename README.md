@@ -20,7 +20,7 @@ import { Topic, Root, Relationship, Summary, Marker, Workbook, helper } from 'xm
 const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
 const workbook = Workbook(
   Root('Grill House')
-    .image(image.data, image.type)
+    .image(image)
     .children([
       Topic('Salad')
         .markers([Marker.Arrow.refresh])
@@ -98,10 +98,10 @@ Define array of labels.
 ```javascript
 Topic('Salad').labels(['Lemon Vinaigrette', 'Ginger Dressing'])
 ```
-### `.image(ImageSource, ImageType)`
-Defines an image for the topic. `ImageSource` can accept `ArrayBuffer`, `Buffer`, `Blob`, `Uint8Array` and `base64 encoded string`.
+### `.image(ImageSource)`
+Defines an image for the topic. `ImageSource` can accept `ArrayBuffer`, `Buffer`, `Uint8Array` and `base64 encoded string`.
 ```javascript
-Topic('Salad').image('data:image/png;base64,...', 'png')
+Topic('Salad').image('data:image/png;base64,...')
 ```
 ### `.summaries(Summary[])`
 Applies summaries.

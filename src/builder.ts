@@ -5,10 +5,10 @@ import type { RefString, Topic } from './internal/model/topic'
 import type { Sheet } from './internal/model/sheet'
 import type { Workbook } from './internal/model/workbook'
 import type { Reference } from './internal/builder/ref'
-import type { ImageSource, ImageType } from './internal/storage'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
+import { ResourceData } from './internal/storage'
 
 export function generateTopic(title: string): Omit<TopicBuilder, 'build'> {
   return makeTopicBuilder(title)
@@ -39,8 +39,8 @@ export function generateSummary(
       topicBuilder.children(topicBuilders)
       return this
     },
-    image(data: ImageSource, type: ImageType) {
-      topicBuilder.image(data, type)
+    image(data: ResourceData) {
+      topicBuilder.image(data)
       return this
     },
     note(newNote: string) {
@@ -90,8 +90,8 @@ export function generateRoot(title: string): Omit<RootBuilder, 'build'> {
       sheetBuilder.relationships(relationships)
       return this
     },
-    image(data: ImageSource, type: ImageType) {
-      topicBuilder.image(data, type)
+    image(data: ResourceData) {
+      topicBuilder.image(data)
       return this
     },
     note(newNote: string) {
@@ -125,6 +125,10 @@ export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootB
   }
 }
 
+export type WorkbookDocument = {
+  archive(): Promise<ArrayBuffer>
+}
+
 export type RelationshipInfo = {
   title: string
   from: string
@@ -139,7 +143,7 @@ export type SummaryInfo = {
 interface BaseTopicBuilder<T> {
   ref: (ref: RefString) => T
   children: (topicBuilders: ReadonlyArray<TopicBuilder>) => T
-  image: (data: ImageSource, type: ImageType) => T
+  image: (data: ResourceData) => T
   note: (newNote: string) => T
   labels: (labels: ReadonlyArray<string>) => T
   markers: (markers: ReadonlyArray<MarkerId>) => T

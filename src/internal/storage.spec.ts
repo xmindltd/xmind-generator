@@ -9,17 +9,20 @@ describe('[internal/storage] makeImageResourceStorage()', () => {
     expect(imageStorage.get).toBeDefined()
   })
 
-  it('should set storage value properly', () => {
+  it('should set storage value properly', async () => {
     const imageStorage = makeImageResourceStorage()
-    expect(imageStorage.set({ data: Buffer.from('test'), type: 'jpg' })).toBeTypeOf('string')
-    expect(imageStorage.set({ data: 'data:image/aabbcc', type: 'png' })).toBeTypeOf('string')
+    expect(await imageStorage.set(Buffer.from('test'))).toBeTypeOf('string')
+    expect(await imageStorage.set('data:image/aabbcc')).is.equal(
+      await imageStorage.set('data:image/aabbcc')
+    )
+    expect(await imageStorage.set(new ArrayBuffer(0))).toBeTypeOf('string')
   })
 
-  it('should get data from storage properly', () => {
+  it('should get data from storage properly', async () => {
     const imageStorage = makeImageResourceStorage()
-    const key = imageStorage.set({ data: Buffer.from('test'), type: 'png' }) ?? ''
-    expect((imageStorage.get(key)?.data as Buffer).toString()).toBe('test')
-    const key2 = imageStorage.set({ data: 'data:image/aabbcc', type: 'png' }) ?? ''
-    expect(imageStorage.get(key2)?.data).toBe('data:image/aabbcc')
+    const key = (await imageStorage.set(Buffer.from('test'))) ?? ''
+    expect((imageStorage.get(key) as Buffer).toString()).toBe('test')
+    const key2 = (await imageStorage.set('data:image/aabbcc')) ?? ''
+    expect(imageStorage.get(key2)).toBe('data:image/aabbcc')
   })
 })

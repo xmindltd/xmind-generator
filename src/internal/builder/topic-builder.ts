@@ -1,13 +1,13 @@
-import { type RefString, Topic, type TopicAttributes, type TopicImageData } from '../model/topic'
+import { type RefString, Topic, type TopicAttributes } from '../model/topic'
 import type { SummaryBuilder, SummaryInfo, TopicBuilder } from '../../builder'
 import { makeReference, mergeReferences, type Reference } from './ref'
-import type { ImageSource, ImageType } from '../storage'
 import type { MarkerId } from '../marker'
+import { ResourceData } from '../storage'
 
 export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
-  let _ref: RefString | undefined = undefined
-  let _image: TopicImageData | undefined = undefined
-  let _note: string | undefined = undefined
+  let _ref: RefString
+  let _image: ResourceData
+  let _note: string
   let _markers: Array<MarkerId> = []
   let _labels: Array<string> = []
 
@@ -23,8 +23,8 @@ export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
       childBuilders.push(...builders)
       return this
     },
-    image(data: ImageSource, type: ImageType) {
-      _image = { data, type }
+    image(data: ResourceData) {
+      _image = data
       return this
     },
     note(newNote: string) {
@@ -63,7 +63,7 @@ export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
       const topic = new Topic(title, attributes, childTopics)
 
       if (_image) {
-        topic.addImage(_image.data, _image.type)
+        topic.addImage(_image)
       }
 
       let reference = mergeReferences([

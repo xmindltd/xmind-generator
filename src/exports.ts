@@ -3,10 +3,9 @@ export type {
   SummaryInfo,
   TopicBuilder,
   RootBuilder,
-  WorkbookBuilder,
-  WorkbookDocument
+  WorkbookBuilder
 } from './builder'
-export type { TopicImageData } from './internal/model/topic'
+export type { ResourceData } from './internal/storage'
 export { Marker } from './internal/marker'
 export {
   generateRoot as Root,

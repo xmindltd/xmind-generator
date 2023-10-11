@@ -1,15 +1,10 @@
 import { uuid } from '../common'
 import type { MarkerId } from '../marker'
-import type { ImageSource, ImageType } from '../storage'
+import type { ResourceData } from '../storage'
 import { Summary } from './summary'
 
 export type TopicId = string
 export type RefString = string
-
-export type TopicImageData = {
-  data: ImageSource
-  type: ImageType
-}
 
 export type TopicAttributes = {
   ref?: RefString
@@ -26,7 +21,7 @@ export class Topic {
   private _summaries: Summary[]
   private _markers: MarkerId[]
   private _labels: string[]
-  private _image: TopicImageData | null
+  private _image: ResourceData | null
   private _note: string | null
 
   constructor(title: string, attributes?: TopicAttributes, children?: Topic[]) {
@@ -67,7 +62,7 @@ export class Topic {
     return this._markers
   }
 
-  get image(): Readonly<TopicImageData | null> {
+  get image(): ResourceData | null {
     return this._image
   }
 
@@ -91,11 +86,8 @@ export class Topic {
     }
   }
 
-  public addImage(imageData: ImageSource, imageType: ImageType): void {
-    this._image = {
-      data: imageData,
-      type: imageType
-    }
+  public addImage(imageData: ResourceData): void {
+    this._image = imageData
   }
 
   public addMarker(markerId: MarkerId): void {

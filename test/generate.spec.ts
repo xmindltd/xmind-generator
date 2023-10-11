@@ -1,22 +1,14 @@
 import path from 'path'
 import { existsSync } from 'fs'
 import { describe, it, expect } from 'vitest'
-import {
-  Topic,
-  Root,
-  Relationship,
-  Summary,
-  Workbook,
-  Marker,
-  helper
-} from '../src/exports'
+import { Topic, Root, Relationship, Summary, Workbook, Marker, helper } from '../src/exports'
 
 describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
     const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
     const document = Workbook(
       Root('Grill House')
-        .image(image.data, image.type)
+        .image(image)
         .children([
           Topic('Salad')
             .markers([Marker.Arrow.refresh])

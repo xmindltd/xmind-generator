@@ -23,7 +23,7 @@ describe('[builder] *', () => {
           .children([
             generateTopic('Salad')
               .ref('topic:foo')
-              .image('data:image/png;base64,...', 'png')
+              .image('data:image/png;base64,...')
               .note('This is notes')
               .markers([Marker.Arrow.refresh])
               .children([
@@ -62,7 +62,7 @@ describe('[builder] *', () => {
     expect(workbook.sheets[0].rootTopic?.ref).toBe('topic:inf')
 
     expect(workbook.sheets[0].rootTopic?.children.length).toBe(2)
-    expect(workbook.sheets[0].rootTopic?.children[0].image?.type).toBe('png')
+    expect(workbook.sheets[0].rootTopic?.children[0].image).toBeDefined()
     expect(workbook.sheets[0].rootTopic?.children[0].note).toBe('This is notes')
     expect(workbook.sheets[0].rootTopic?.children[0].markers).toEqual([Marker.Arrow.refresh])
 

@@ -2,9 +2,9 @@ import jszip from 'jszip'
 import type { Relationship } from './model/relationship'
 import type { Sheet } from './model/sheet'
 import type { Summary } from './model/summary'
-import type { Topic, TopicImageData } from './model/topic'
+import type { Topic } from './model/topic'
 import type { Workbook } from './model/workbook'
-import { makeImageResourceStorage } from './storage'
+import { ResourceData, makeImageResourceStorage } from './storage'
 
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>
 
@@ -26,24 +26,26 @@ export function asJSONArray(whatever: unknown): Array<JSONValue> {
 
 const resourceIdPrefix = 'xap:resources/'
 
-export function serializeWorkbook(
+export async function serializeWorkbook(
   workbook: Workbook,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): ReadonlyArray<JSONObject> {
-  return workbook.sheets.map(sheet => serializeSheet(sheet, imageResourceSetter))
+  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+): Promise<ReadonlyArray<JSONObject>> {
+  return await Promise.all(
+    workbook.sheets.map(async sheet => serializeSheet(sheet, imageResourceSetter))
+  )
 }
 
-export function serializeSheet(
+export async function serializeSheet(
   sheet: Sheet,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): Readonly<JSONObject> {
+  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+): Promise<Readonly<JSONObject>> {
   const obj: JSONObject = {
     id: sheet.id,
     class: 'sheet',
     title: sheet.title ?? ''
   }
   if (sheet.rootTopic) {
-    obj.rootTopic = serializeTopic(sheet.rootTopic, imageResourceSetter)
+    obj.rootTopic = await serializeTopic(sheet.rootTopic, imageResourceSetter)
   }
   if (sheet.relationships.length > 0) {
     obj.relationships = sheet.relationships.map(relationship => serializeRelationship(relationship))
@@ -51,10 +53,10 @@ export function serializeSheet(
   return obj
 }
 
-export function serializeTopic(
+export async function serializeTopic(
   topic: Topic | Readonly<Topic>,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): Readonly<JSONObject> {
+  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+): Promise<Readonly<JSONObject>> {
   const obj: JSONObject = {
     id: topic.id,
     class: 'topic',
@@ -74,12 +76,14 @@ export function serializeTopic(
 
   if (topic.children.length > 0) {
     obj.children = {
-      attached: topic.children.map(child => serializeTopic(child, imageResourceSetter))
+      attached: await Promise.all(
+        topic.children.map(async child => serializeTopic(child, imageResourceSetter))
+      )
     }
   }
 
   if (image) {
-    const resourcePath = imageResourceSetter(image)
+    const resourcePath = await imageResourceSetter(image)
     if (resourcePath) {
       obj.image = {
         src: resourceIdPrefix + resourcePath
@@ -93,15 +97,16 @@ export function serializeTopic(
 
   if (summaries.length > 0) {
     const summaryTopics: Array<JSONObject> = []
-    summaries.forEach(summary => {
+    for (const summary of summaries) {
       const serializedSummary = serializeSummaryInfo(topic, summary)
-      if (!serializedSummary) return
-      obj.summaries = [
-        ...asJSONArray(obj.summaries ?? []),
-        asJSONObject({ ...serializedSummary, topicId: summary.summaryTopic.id })
-      ]
-      summaryTopics.push(serializeTopic(summary.summaryTopic, imageResourceSetter))
-    })
+      if (serializedSummary) {
+        obj.summaries = [
+          ...asJSONArray(obj.summaries ?? []),
+          asJSONObject({ ...serializedSummary, topicId: summary.summaryTopic.id })
+        ]
+        summaryTopics.push(await serializeTopic(summary.summaryTopic, imageResourceSetter))
+      }
+    }
 
     if (summaryTopics.length > 0) {
       obj.children = {
@@ -147,7 +152,7 @@ export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
   const zip = new jszip()
 
   const { storage, set } = makeImageResourceStorage()
-  const serializedWorkbook = serializeWorkbook(workbook, set)
+  const serializedWorkbook = await serializeWorkbook(workbook, set)
   const content = JSON.stringify(serializedWorkbook)
   zip.file('content.json', content)
 
@@ -157,7 +162,7 @@ export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
   const resources = zip.folder('resources')
   const resourcePaths = []
   for (const [path, data] of Object.entries(storage)) {
-    resources?.file(path, data.data)
+    resources?.file(path, data)
     resourcePaths.push(`resources/${path}`)
   }
 

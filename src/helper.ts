@@ -1,6 +1,5 @@
 import { writeFile } from 'fs'
 import { readFile } from 'fs/promises'
-import type { ImageType } from './internal/storage'
 import type { WorkbookDocument } from './builder'
 
 export async function saveLocal(document: WorkbookDocument, pathToFile: string) {
@@ -10,17 +9,6 @@ export async function saveLocal(document: WorkbookDocument, pathToFile: string) 
   })
 }
 
-export async function readImageFile(filePath: string): Promise<{ data: Buffer; type: ImageType }> {
-  const ext = filePath.split('.').pop() as ImageType
-  const imageData = await readFile(filePath)
-  return { data: imageData, type: ext }
-}
-
-export function suggestedFilePath(document: WorkbookDocument, pathToDirectory: string): string {
-  const workbook = document?.workbook
-  const name = workbook?.sheets?.[0]?.rootTopic?.title ?? workbook?.sheets?.[0]?.title ?? 'map'
-  if (pathToDirectory.endsWith('/')) {
-    pathToDirectory = pathToDirectory.slice(0, -1)
-  }
-  return `${pathToDirectory}/${name}.xmind`
+export async function readImageFile(filePath: string): Promise<Buffer> {
+  return await readFile(filePath)
 }

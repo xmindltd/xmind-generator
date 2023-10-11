@@ -15,11 +15,11 @@ import {
 import { makeImageResourceStorage } from './storage'
 
 describe('[serializer] serializeWorkbook', () => {
-  it('should serialize a workbook', () => {
+  it('should serialize a workbook', async () => {
     const workbook = builder()
       .create([generateRoot('Grill House') as RootBuilder])
       .build()
-    const serializedWorkbook = serializeWorkbook(workbook, makeImageResourceStorage().set)
+    const serializedWorkbook = await serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()
     expect(serializedWorkbook.length).toBeGreaterThan(0)
     expect((serializedWorkbook[0]?.rootTopic as any)?.title).toBe('Grill House')
@@ -28,18 +28,18 @@ describe('[serializer] serializeWorkbook', () => {
 })
 
 describe('[serializer] serializeSheet', () => {
-  it('should serialize a sheet', () => {
+  it('should serialize a sheet', async () => {
     const sheet = new Sheet('sheet')
-    const serializedSheet = serializeSheet(sheet, makeImageResourceStorage().set)
+    const serializedSheet = await serializeSheet(sheet, makeImageResourceStorage().set)
     expect(serializedSheet).toBeDefined()
     expect(serializedSheet.title).toBe('sheet')
   })
 })
 
 describe('[serializer] serializeTopic', () => {
-  it('should serialize a topic', () => {
+  it('should serialize a topic', async () => {
     const topic = new Topic('topic', { labels: ['this is a label'], markers: [Marker.Smiley.cry] })
-    const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set)
+    const serializedTopic = await serializeTopic(topic, makeImageResourceStorage().set)
     expect(serializedTopic).toBeDefined()
     expect(serializedTopic?.labels).includes('this is a label')
     expect(serializedTopic?.markers?.[0]?.markerId).toBe(Marker.Smiley.cry.id)
@@ -47,12 +47,12 @@ describe('[serializer] serializeTopic', () => {
 })
 
 describe('[serializer] serializeTopic > serializeSummary', () => {
-  it('should serialize a topic summary correctly', () => {
+  it('should serialize a topic summary correctly', async () => {
     const topic = new Topic('root')
     const childTopic1 = topic.addTopic('child1')
     const childTopic2 = topic.addTopic('child2')
     topic.addSummary('summary', childTopic1.id, childTopic2.id, new Topic('summary'))
-    const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set)
+    const serializedTopic = await serializeTopic(topic, makeImageResourceStorage().set)
     expect(serializedTopic).toBeDefined()
     expect(serializedTopic?.summaries?.[0]?.range).toBe('(0,1)')
     expect((serializedTopic?.children as any).summary[0].title).toBe('summary')
@@ -65,7 +65,7 @@ describe('[archive] archive workbook', () => {
   beforeEach(async () => {
     const workbook = new Workbook()
     workbook.createRoot('Grill House')
-    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0), 'png')
+    workbook.getSheet(workbook.sheets[0].id)?.rootTopic?.addImage(new ArrayBuffer(0))
 
     const archived = await archive(workbook)
 
