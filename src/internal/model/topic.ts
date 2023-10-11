@@ -105,11 +105,15 @@ export class Topic {
     this._markers.push(markerId)
   }
 
-  public addSummary(title: string, from: TopicId | number, to: TopicId | number): Summary {
-    const summaryToAdd = new Summary(title, from, to)
-    const summaryFound = this._summaries.find(summary => summary.isEqualTo(summaryToAdd))
-    if (summaryFound) {
-      return summaryFound
+  public addSummary(
+    title: string,
+    from: TopicId | number,
+    to: TopicId | number,
+    summaryTopic: Topic
+  ): Summary | null {
+    const summaryToAdd = new Summary(title, from, to, summaryTopic)
+    if (this._summaries.find(summary => summary.isConflictWith(summaryToAdd))) {
+      return null
     }
     this._summaries.push(summaryToAdd)
     return summaryToAdd

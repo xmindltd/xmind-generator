@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { generateTopic, generateRoot, sheet, builder, generateRelationship, generateSummary } from '../../builder'
+import {
+  generateTopic,
+  generateRoot,
+  generateSheet,
+  builder,
+  generateRelationship,
+  generateSummary,
+  RelationshipBuilder
+} from '../../builder'
 import { Marker } from '../marker'
 import { Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
@@ -81,14 +89,19 @@ describe('[builder] *', () => {
 
   it('should throw exception if ref in relationship info is invalid', () => {
     expect(() =>
-      sheet()
+      generateSheet()
         .rootTopic(
           generateTopic('root').children([
             generateTopic('Salad').ref('topic:foo'),
             generateTopic('Starters').ref('topic:bar')
           ])
         )
-        .relationships([generateRelationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
+        .relationships([
+          generateRelationship('', {
+            from: 'topic:errorRef',
+            to: 'topic:bar'
+          }) as RelationshipBuilder
+        ])
         .build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })

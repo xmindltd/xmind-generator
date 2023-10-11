@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateRoot, builder } from '../builder'
+import { generateRoot, builder, RootBuilder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
 import { Marker } from './marker'
@@ -9,7 +9,7 @@ import { makeImageResourceStorage } from './storage'
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', () => {
     const workbook = builder()
-      .create([generateRoot('Grill House')])
+      .create([generateRoot('Grill House') as RootBuilder])
       .build()
     const serializedWorkbook = serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()
@@ -43,7 +43,7 @@ describe('[serializer] serializeTopic > serializeSummary', () => {
     const topic = new Topic('root')
     const childTopic1 = topic.addTopic('child1')
     const childTopic2 = topic.addTopic('child2')
-    topic.addSummary('summary', childTopic1.id, childTopic2.id)
+    topic.addSummary('summary', childTopic1.id, childTopic2.id, new Topic('summary'))
     const serializedTopic = serializeTopic(topic, makeImageResourceStorage().set)
     expect(serializedTopic).toBeDefined()
     expect(serializedTopic?.summaries?.[0]?.range).toBe('(0,1)')

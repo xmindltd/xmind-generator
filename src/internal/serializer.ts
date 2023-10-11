@@ -97,14 +97,13 @@ export function serializeTopic(
   if (summaries.length > 0) {
     const summaryTopics: Array<JSONObject> = []
     summaries.forEach(summary => {
-      const serializedSummary = serializeSummary(topic, summary)
+      const serializedSummary = serializeSummaryInfo(topic, summary)
       if (!serializedSummary) return
-      const topicId = uuid()
       obj.summaries = [
         ...asJSONArray(obj.summaries ?? []),
-        asJSONObject({ ...serializedSummary, topicId })
+        asJSONObject({ ...serializedSummary, topicId: summary.summaryTopic.id })
       ]
-      summaryTopics.push(asJSONObject({ id: topicId, class: 'topic', title: summary.title }))
+      summaryTopics.push(serializeTopic(summary.summaryTopic, imageResourceSetter))
     })
 
     if (summaryTopics.length > 0) {
@@ -128,7 +127,7 @@ export function serializeRelationship(relationship: Relationship): Readonly<Seri
   }
 }
 
-export function serializeSummary(
+export function serializeSummaryInfo(
   topic: Readonly<Topic>,
   summary: Summary
 ): Readonly<SerializedObject> | null {

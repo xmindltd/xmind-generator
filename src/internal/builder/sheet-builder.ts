@@ -1,16 +1,16 @@
 import { Sheet } from '../model/sheet'
-import { type RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
+import { SheetBuilder, TopicBuilder, RelationshipBuilder } from '../../builder'
 
 export function makeSheetBuilder(title?: string): SheetBuilder {
   let rootTopicBuilder: TopicBuilder
-  const relationshipInfos: RelationshipInfo[] = []
+  const relationshipBuilders: RelationshipBuilder[] = []
   return {
     rootTopic(topicBuilder: TopicBuilder) {
       rootTopicBuilder = topicBuilder
       return this
     },
-    relationships(relationships: ReadonlyArray<RelationshipInfo>) {
-      relationshipInfos.push(...relationships)
+    relationships(relationships: ReadonlyArray<RelationshipBuilder>) {
+      relationshipBuilders.push(...relationships)
       return this
     },
     title(sheetTitle: string) {
@@ -20,9 +20,10 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
     build() {
       const { topic: rootTopic, reference } = rootTopicBuilder?.build() ?? {}
       const sheet = new Sheet(title, rootTopic)
-      relationshipInfos.forEach(({ title, from, to }) =>
+      relationshipBuilders.forEach(builder => {
+        const { title, from, to } = builder.build()
         sheet.addRelationship(title, reference.fetch(from).id, reference.fetch(to).id)
-      )
+      })
       return sheet
     }
   }
