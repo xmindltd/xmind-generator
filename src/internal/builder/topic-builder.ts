@@ -1,10 +1,11 @@
 import { type RefString, Topic, type TopicAttributes } from '../model/topic'
-import type { SummaryBuilder, SummaryInfo, TopicBuilder } from '../../builder'
+import { type SummaryBuilder, type TopicBuilder } from '../../builder'
 import { makeReference, mergeReferences, type Reference } from './ref'
 import type { MarkerId } from '../marker'
-import { ResourceData } from '../storage'
+import { type ResourceData } from '../storage'
+import { type SummaryInfo, asBuilder } from './types'
 
-export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
+export function makeTopicBuilder(title: string) {
   let _ref: RefString
   let _image: ResourceData
   let _note: string
@@ -48,7 +49,9 @@ export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
       const childReferences: Reference<Topic>[] = []
       const summaryReferences: Reference<Topic>[] = []
       childBuilders.forEach(builder => {
-        const { topic, reference } = builder.build()
+        const { topic, reference } = asBuilder<{ topic: Topic; reference: Reference<Topic> }>(
+          builder
+        ).build()
         childTopics.push(topic)
         childReferences.push(reference)
       })
@@ -74,7 +77,13 @@ export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
       ])
 
       summaryBuilders.forEach(summaryBuilder => {
-        const { info, topic: summaryTopic, reference: summaryReference } = summaryBuilder.build()
+        const {
+          info,
+          topic: summaryTopic,
+          reference: summaryReference
+        } = asBuilder<{ info: SummaryInfo; topic: Topic; reference: Reference<Topic> }>(
+          summaryBuilder
+        ).build()
         reference = mergeReferences([summaryReference, reference])
         const fromIdentifier =
           typeof info.from === 'number' ? info.from : reference.fetch(info.from).id
@@ -84,5 +93,5 @@ export function makeTopicBuilder(title: string): Omit<TopicBuilder, 'build'> {
 
       return { topic, reference }
     }
-  } as TopicBuilder
+  }
 }

@@ -1,4 +1,4 @@
-import { RelationshipBuilder } from '../../builder'
+import type { RelationshipBuilder } from '../../builder'
 
 export function makeRelationshipBuilder(
   title: string,

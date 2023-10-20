@@ -1,9 +1,9 @@
 import { writeFile } from 'fs'
 import { readFile } from 'fs/promises'
-import type { WorkbookDocument } from './builder'
+import type { WorkbookBuilder } from './builder'
 
-export async function saveLocal(document: WorkbookDocument, pathToFile: string) {
-  const buffer = await document.archive()
+export async function writeLocalFile(workbook: WorkbookBuilder, pathToFile: string) {
+  const buffer = await workbook.archive()
   writeFile(pathToFile, Buffer.from(buffer), err => {
     if (err) throw err
   })

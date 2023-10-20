@@ -1,10 +1,11 @@
 import JSZip from 'jszip'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { generateRoot, builder, RootBuilder } from '../builder'
+import { generateRoot, RootTopicBuilder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
 import { Marker } from './marker'
 import { Workbook } from './model/workbook'
+import { makeWorkbookBuilder } from './builder/workbook-builder'
 import {
   archive,
   serializeSheet,
@@ -13,12 +14,13 @@ import {
   asJSONObject
 } from './serializer'
 import { makeImageResourceStorage } from './storage'
+import { asBuilder } from './builder/types'
 
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', async () => {
-    const workbook = builder()
-      .create([generateRoot('Grill House') as RootBuilder])
-      .build()
+    const workbook = asBuilder<Workbook>(
+      makeWorkbookBuilder([generateRoot('Grill House') as RootTopicBuilder])
+    ).build()
     const serializedWorkbook = await serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()
     expect(serializedWorkbook.length).toBeGreaterThan(0)

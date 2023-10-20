@@ -1,16 +1,13 @@
-import type { RootBuilder, SheetBuilder, WorkbookBuilder } from '../../builder'
+import { type RootTopicBuilder, type SheetBuilder, type WorkbookBuilder } from '../../builder'
+import { type Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
+import { asBuilder } from './types'
 
-export function makeWorkbookBuilder(): WorkbookBuilder {
-  const childBuilders: Array<SheetBuilder | RootBuilder> = []
+export function makeWorkbookBuilder(builders: ReadonlyArray<SheetBuilder | RootTopicBuilder>) {
   return {
-    create(builders: ReadonlyArray<SheetBuilder | RootBuilder>) {
-      childBuilders.push(...builders)
-      return this
-    },
     build() {
-      const sheets = childBuilders.map(builder => builder.build())
+      const sheets = builders.map(builder => asBuilder<Sheet>(builder).build())
       return new Workbook(sheets)
     }
-  }
+  } as unknown as WorkbookBuilder
 }
