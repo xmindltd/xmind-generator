@@ -1,5 +1,3 @@
-import { uuid } from './common'
-
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
 
 export type ResourcePath = string

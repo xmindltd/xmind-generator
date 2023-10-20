@@ -4,20 +4,20 @@ import { makeWorkbookBuilder } from './internal/builder/workbook-builder'
 import type { RefString, Topic } from './internal/model/topic'
 import type { Sheet } from './internal/model/sheet'
 import type { Workbook } from './internal/model/workbook'
-import type { Reference } from './internal/builder/ref'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
-import { ResourceData } from './internal/storage'
+import type { ResourceData } from './internal/storage'
+import { asBuilder } from './internal/builder/types'
 
-export function generateTopic(title: string): Omit<TopicBuilder, 'build'> {
+export function generateTopic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
 
 export function generateRelationship(
   title: string,
   attributes: { from: string; to: string }
-): Omit<RelationshipBuilder, 'build'> {
+): RelationshipBuilder {
   return makeRelationshipBuilder(title, attributes)
 }
 
@@ -28,7 +28,7 @@ export function generateSheet(title?: string): SheetBuilder {
 export function generateSummary(
   title: string,
   attributes: { from: string | number; to: string | number }
-): Omit<SummaryBuilder, 'build'> {
+): SummaryBuilder {
   const topicBuilder = makeTopicBuilder(title)
   return {
     ref(ref: RefString) {
@@ -59,13 +59,13 @@ export function generateSummary(
     build: () => {
       return {
         info: { title, from: attributes.from, to: attributes.to },
-        ...(topicBuilder as TopicBuilder).build()
+        ...asBuilder<Topic>(topicBuilder).build()
       }
     }
   } as SummaryBuilder
 }
 
-export function generateRoot(title: string): Omit<RootBuilder, 'build'> {
+export function generateRoot(title: string): RootTopicBuilder {
   const sheetBuilder = makeSheetBuilder()
   const topicBuilder = makeTopicBuilder(title)
   sheetBuilder.rootTopic(topicBuilder as TopicBuilder)
@@ -108,74 +108,46 @@ export function generateRoot(title: string): Omit<RootBuilder, 'build'> {
       return this
     },
 
-    build: sheetBuilder.build
-  } as RootBuilder
+    build: asBuilder<Sheet>(sheetBuilder).build
+  } as RootTopicBuilder
 }
 
-export function builder() {
-  return makeWorkbookBuilder()
-}
-
-export function generateWorkbook(rootBuilder: ReadonlyArray<RootBuilder> | RootBuilder) {
-  const workbook = builder()
-    .create(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
-    .build()
+export function generateWorkbook(rootBuilder: ReadonlyArray<RootTopicBuilder> | RootTopicBuilder) {
+  const workbook = asBuilder<Workbook>(
+    makeWorkbookBuilder(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
+  ).build()
   return {
     archive: () => archive(workbook)
   }
 }
 
-export type WorkbookDocument = {
+export type WorkbookBuilder = {
   archive(): Promise<ArrayBuffer>
 }
 
-export type RelationshipInfo = {
-  title: string
-  from: string
-  to: string
+interface BaseTopicBuilder {
+  ref: (ref: RefString) => this
+  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => this
+  image: (data: ResourceData) => this
+  note: (newNote: string) => this
+  labels: (labels: ReadonlyArray<string>) => this
+  markers: (markers: ReadonlyArray<MarkerId>) => this
 }
-export type SummaryInfo = {
-  title: string
-  from: string | number
-  to: string | number
-}
-
-interface BaseTopicBuilder<T> {
-  ref: (ref: RefString) => T
-  children: (topicBuilders: ReadonlyArray<TopicBuilder>) => T
-  image: (data: ResourceData) => T
-  note: (newNote: string) => T
-  labels: (labels: ReadonlyArray<string>) => T
-  markers: (markers: ReadonlyArray<MarkerId>) => T
-}
-export interface TopicBuilder extends BaseTopicBuilder<TopicBuilder> {
-  summaries: (summaries: ReadonlyArray<SummaryBuilder | Omit<SummaryBuilder, 'build'>>) => this
-  build: () => { topic: Topic; reference: Reference<Topic> }
+export interface TopicBuilder extends BaseTopicBuilder {
+  summaries: (summaries: ReadonlyArray<SummaryBuilder>) => this
 }
 
-export interface RootBuilder extends BaseTopicBuilder<RootBuilder> {
+export interface RootTopicBuilder extends BaseTopicBuilder {
   sheetTitle: (title: string) => this
-  relationships: (
-    relationships: ReadonlyArray<RelationshipBuilder | Omit<RelationshipBuilder, 'build'>>
-  ) => this
-  summaries: (summaries: ReadonlyArray<SummaryBuilder | Omit<SummaryBuilder, 'build'>>) => this
-  build: () => Sheet
+  relationships: (relationships: ReadonlyArray<RelationshipBuilder>) => this
+  summaries: (summaries: ReadonlyArray<SummaryBuilder>) => this
 }
 
-export interface SummaryBuilder extends BaseTopicBuilder<SummaryBuilder> {
-  build: () => { info: SummaryInfo; topic: Topic; reference: Reference<Topic> }
-}
+export interface SummaryBuilder extends BaseTopicBuilder {}
 export interface SheetBuilder {
   rootTopic: (topicBuilder: TopicBuilder) => this
   relationships: (relationships: ReadonlyArray<RelationshipBuilder>) => this
   title: (sheetTitle: string) => this
-  build: () => Sheet
 }
 
-export interface RelationshipBuilder {
-  build: () => RelationshipInfo
-}
-export interface WorkbookBuilder {
-  create: (builders: ReadonlyArray<SheetBuilder | RootBuilder>) => this
-  build: () => Workbook
-}
+export interface RelationshipBuilder {}

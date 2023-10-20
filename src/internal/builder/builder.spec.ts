@@ -3,7 +3,6 @@ import {
   generateTopic,
   generateRoot,
   generateSheet,
-  builder,
   generateRelationship,
   generateSummary,
   RelationshipBuilder
@@ -11,13 +10,15 @@ import {
 import { Marker } from '../marker'
 import { Sheet } from '../model/sheet'
 import { Workbook } from '../model/workbook'
+import { makeWorkbookBuilder } from './workbook-builder'
+import { asBuilder } from './types'
 
 let workbook: Workbook
 
 describe('[builder] *', () => {
   it('should create a workbook', () => {
-    workbook = builder()
-      .create([
+    workbook = asBuilder<Workbook>(
+      makeWorkbookBuilder([
         generateRoot('Grill House')
           .ref('topic:inf')
           .children([
@@ -54,7 +55,7 @@ describe('[builder] *', () => {
             })
           ])
       ])
-      .build()
+    ).build()
 
     expect(workbook).instanceOf(Workbook)
 
@@ -89,20 +90,21 @@ describe('[builder] *', () => {
 
   it('should throw exception if ref in relationship info is invalid', () => {
     expect(() =>
-      generateSheet()
-        .rootTopic(
-          generateTopic('root').children([
-            generateTopic('Salad').ref('topic:foo'),
-            generateTopic('Starters').ref('topic:bar')
+      asBuilder<Sheet>(
+        generateSheet()
+          .rootTopic(
+            generateTopic('root').children([
+              generateTopic('Salad').ref('topic:foo'),
+              generateTopic('Starters').ref('topic:bar')
+            ])
+          )
+          .relationships([
+            generateRelationship('', {
+              from: 'topic:errorRef',
+              to: 'topic:bar'
+            }) as RelationshipBuilder
           ])
-        )
-        .relationships([
-          generateRelationship('', {
-            from: 'topic:errorRef',
-            to: 'topic:bar'
-          }) as RelationshipBuilder
-        ])
-        .build()
+      ).build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })
 
