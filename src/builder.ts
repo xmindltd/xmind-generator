@@ -7,7 +7,7 @@ import type { Workbook } from './internal/model/workbook'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
-import type { ResourceData } from './internal/storage'
+import type { NamedResourceData, ResourceData } from './internal/storage'
 import { asBuilder } from './internal/builder/types'
 
 export function generateTopic(title: string): TopicBuilder {
@@ -39,7 +39,7 @@ export function generateSummary(
       topicBuilder.children(topicBuilders)
       return this
     },
-    image(data: ResourceData) {
+    image(data: NamedResourceData) {
       topicBuilder.image(data)
       return this
     },
@@ -90,7 +90,7 @@ export function generateRoot(title: string): RootTopicBuilder {
       sheetBuilder.relationships(relationships)
       return this
     },
-    image(data: ResourceData) {
+    image(data: NamedResourceData) {
       topicBuilder.image(data)
       return this
     },
@@ -128,7 +128,7 @@ export type WorkbookBuilder = {
 interface BaseTopicBuilder {
   ref: (ref: RefString) => this
   children: (topicBuilders: ReadonlyArray<TopicBuilder>) => this
-  image: (data: ResourceData) => this
+  image: (data: NamedResourceData) => this
   note: (newNote: string) => this
   labels: (labels: ReadonlyArray<string>) => this
   markers: (markers: ReadonlyArray<MarkerId>) => this

@@ -24,7 +24,7 @@ describe('[builder] *', () => {
           .children([
             generateTopic('Salad')
               .ref('topic:foo')
-              .image('data:image/png;base64,...')
+              .image({ name: 'test', data: 'data:image/png;base64,...' })
               .note('This is notes')
               .markers([Marker.Arrow.refresh])
               .children([
