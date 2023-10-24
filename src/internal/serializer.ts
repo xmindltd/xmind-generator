@@ -4,7 +4,7 @@ import type { Sheet } from './model/sheet'
 import type { Summary } from './model/summary'
 import type { Topic } from './model/topic'
 import type { Workbook } from './model/workbook'
-import { ResourceData, makeImageResourceStorage } from './storage'
+import { type NamedResourceData, makeImageResourceStorage } from './storage'
 
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>
 
@@ -28,7 +28,7 @@ const resourceIdPrefix = 'xap:resources/'
 
 export async function serializeWorkbook(
   workbook: Workbook,
-  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
 ): Promise<ReadonlyArray<JSONObject>> {
   return await Promise.all(
     workbook.sheets.map(async sheet => serializeSheet(sheet, imageResourceSetter))
@@ -37,7 +37,7 @@ export async function serializeWorkbook(
 
 export async function serializeSheet(
   sheet: Sheet,
-  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
 ): Promise<Readonly<JSONObject>> {
   const obj: JSONObject = {
     id: sheet.id,
@@ -55,7 +55,7 @@ export async function serializeSheet(
 
 export async function serializeTopic(
   topic: Topic | Readonly<Topic>,
-  imageResourceSetter: (imageData: ResourceData) => Promise<string | null>
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
 ): Promise<Readonly<JSONObject>> {
   const obj: JSONObject = {
     id: topic.id,

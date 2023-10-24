@@ -2,12 +2,12 @@ import { type RefString, Topic, type TopicAttributes } from '../model/topic'
 import { type SummaryBuilder, type TopicBuilder } from '../../builder'
 import { makeReference, mergeReferences, type Reference } from './ref'
 import type { MarkerId } from '../marker'
-import { type ResourceData } from '../storage'
+import { type NamedResourceData } from '../storage'
 import { type SummaryInfo, asBuilder } from './types'
 
 export function makeTopicBuilder(title: string) {
   let _ref: RefString
-  let _image: ResourceData
+  let _image: NamedResourceData
   let _note: string
   let _markers: Array<MarkerId> = []
   let _labels: Array<string> = []
@@ -24,7 +24,7 @@ export function makeTopicBuilder(title: string) {
       childBuilders.push(...builders)
       return this
     },
-    image(data: ResourceData) {
+    image(data: NamedResourceData) {
       _image = data
       return this
     },

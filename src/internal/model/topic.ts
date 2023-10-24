@@ -1,6 +1,6 @@
 import { uuid } from '../common'
 import type { MarkerId } from '../marker'
-import type { ResourceData } from '../storage'
+import type { NamedResourceData } from '../storage'
 import { Summary } from './summary'
 
 export type TopicId = string
@@ -21,7 +21,7 @@ export class Topic {
   private _summaries: Summary[]
   private _markers: MarkerId[]
   private _labels: string[]
-  private _image: ResourceData | null
+  private _image: NamedResourceData | null
   private _note: string | null
 
   constructor(title: string, attributes?: TopicAttributes, children?: Topic[]) {
@@ -62,7 +62,7 @@ export class Topic {
     return this._markers
   }
 
-  get image(): ResourceData | null {
+  get image(): NamedResourceData | null {
     return this._image
   }
 
@@ -86,7 +86,7 @@ export class Topic {
     }
   }
 
-  public addImage(imageData: ResourceData): void {
+  public addImage(imageData: NamedResourceData): void {
     this._image = imageData
   }
 
