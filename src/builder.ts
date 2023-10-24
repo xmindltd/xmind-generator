@@ -7,7 +7,7 @@ import type { Workbook } from './internal/model/workbook'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
-import type { NamedResourceData, ResourceData } from './internal/storage'
+import type { NamedResourceData } from './internal/storage'
 import { asBuilder } from './internal/builder/types'
 
 export function generateTopic(title: string): TopicBuilder {
