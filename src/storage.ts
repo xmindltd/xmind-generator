@@ -1,1 +1,1 @@
-export type { ResourcePath, ResourceData } from './internal/storage'
+export type { ResourcePath, ResourceData, NamedResourceData } from './internal/storage'
