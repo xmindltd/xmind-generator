@@ -1,8 +1,8 @@
 import { makeSheetBuilder } from './internal/builder/sheet-builder'
 import { makeTopicBuilder } from './internal/builder/topic-builder'
 import { makeWorkbookBuilder } from './internal/builder/workbook-builder'
-import type { RefString, Topic } from './internal/model/topic'
-import type { Sheet } from './internal/model/sheet'
+import type { RefString, Topic as TopicModel } from './internal/model/topic'
+import type { Sheet as SheetModel } from './internal/model/sheet'
 import type { Workbook } from './internal/model/workbook'
 import type { MarkerId } from './internal/marker'
 import { archive } from './internal/serializer'
@@ -10,22 +10,22 @@ import { makeRelationshipBuilder } from './internal/builder/relationship-builder
 import type { NamedResourceData } from './internal/storage'
 import { asBuilder } from './internal/builder/types'
 
-export function generateTopic(title: string): TopicBuilder {
+export function Topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
 }
 
-export function generateRelationship(
+export function Relationship(
   title: string,
   attributes: { from: string; to: string }
 ): RelationshipBuilder {
   return makeRelationshipBuilder(title, attributes)
 }
 
-export function generateSheet(title?: string): SheetBuilder {
+export function Sheet(title?: string): SheetBuilder {
   return makeSheetBuilder(title)
 }
 
-export function generateSummary(
+export function Summary(
   title: string,
   attributes: { from: string | number; to: string | number }
 ): SummaryBuilder {
@@ -59,13 +59,13 @@ export function generateSummary(
     build: () => {
       return {
         info: { title, from: attributes.from, to: attributes.to },
-        ...asBuilder<Topic>(topicBuilder).build()
+        ...asBuilder<TopicModel>(topicBuilder).build()
       }
     }
   } as SummaryBuilder
 }
 
-export function generateRoot(title: string): RootTopicBuilder {
+export function Root(title: string): RootTopicBuilder {
   const sheetBuilder = makeSheetBuilder()
   const topicBuilder = makeTopicBuilder(title)
   sheetBuilder.rootTopic(topicBuilder as TopicBuilder)
@@ -108,11 +108,11 @@ export function generateRoot(title: string): RootTopicBuilder {
       return this
     },
 
-    build: asBuilder<Sheet>(sheetBuilder).build
+    build: asBuilder<SheetModel>(sheetBuilder).build
   } as RootTopicBuilder
 }
 
-export function generateWorkbook(rootBuilder: ReadonlyArray<RootTopicBuilder> | RootTopicBuilder) {
+export function Workbook(rootBuilder: ReadonlyArray<RootTopicBuilder> | RootTopicBuilder) {
   const workbook = asBuilder<Workbook>(
     makeWorkbookBuilder(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
   ).build()

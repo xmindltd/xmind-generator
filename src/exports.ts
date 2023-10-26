@@ -4,11 +4,11 @@ export {
   type TopicBuilder,
   type RelationshipBuilder,
   type SummaryBuilder,
-  generateWorkbook as Workbook,
-  generateRoot as Root,
-  generateTopic as Topic,
-  generateRelationship as Relationship,
-  generateSummary as Summary
+  Workbook,
+  Root,
+  Topic,
+  Relationship,
+  Summary
 } from './builder'
 export * from './storage'
 export * from './marker'

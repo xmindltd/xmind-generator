@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { generateRoot, RootTopicBuilder } from '../builder'
+import { Root, RootTopicBuilder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
 import { Marker } from './marker'
@@ -19,7 +19,7 @@ import { asBuilder } from './builder/types'
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', async () => {
     const workbook = asBuilder<Workbook>(
-      makeWorkbookBuilder([generateRoot('Grill House') as RootTopicBuilder])
+      makeWorkbookBuilder([Root('Grill House') as RootTopicBuilder])
     ).build()
     const serializedWorkbook = await serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()
