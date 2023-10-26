@@ -61,9 +61,9 @@ workbook.archive() // ArrayBuffer of document
 
 ## Interface
 
-The main component of an Xmind document is a `Workbook` object, which contains multiple mind maps. Each mind map is formed as a hierarchical tree structure consisting of a set of `Topic` objects as its nodes, where a `Root` object represents the root node as well as the containing mind map.
+The main component of an Xmind document is a `Workbook` object, which contains multiple mind maps. Each mind map is formed as a hierarchical tree structure consisting of a set of `Topic` objects as its nodes, where a `RootTopic` object represents the root node as well as the containing mind map.
 
-The `Root` and `Topic` builders create nodes in the mind map structure. The `Root` builder specifically builds the root node, which connects to other nodes through the `children` method.
+The `RootTopic` and `Topic` builders create nodes in the mind map structure. The `RootTopic` builder specifically builds the root node, which connects to other nodes through the `children` method.
 
  ```javascript
 Workbook(
@@ -76,7 +76,7 @@ Workbook(
   ])
 )
 // For building a multiple sheets structure,
-// pass an array of `Root` builders to `Workbook`
+// pass an array of `RootTopic` builders to `Workbook`
  ```
 
 ### `.markers(MarkerId[])`
@@ -112,7 +112,7 @@ Topic('Grill House').summaries([Summary('summary title..', { from: 'topic:foo', 
 ### `.relationships(Relationship[])`
 Applies relationships.
 ```javascript
-// Note: `relationships` method is only available on the `Root` builder
+// Note: `relationships` method is only available on the `RootTopic` builder
 RootTopic('Grill House').relationships([Relationship('title...', { from: 'topic:foo', to: 'topic:bar' })])
 ```
 
