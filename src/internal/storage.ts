@@ -36,8 +36,7 @@ export async function computeResourcePath(resource: NamedResourceData) {
 }
 
 function fileExtname(filePath: string) {
-  const fileExtensionMatch = filePath.match(/\.(.+)$/)
-  return fileExtensionMatch ? fileExtensionMatch[1] : ''
+  return filePath.split('.').pop()
 }
 
 async function generateSHA256Hash(data: ResourceData) {
