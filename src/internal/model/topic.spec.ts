@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { Topic } from './topic'
-import { Marker } from '../marker'
+import { Marker } from '../../marker'
 
 describe('[internal/model/topic] constructor()', () => {
   it('should create a topic', () => {

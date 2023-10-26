@@ -4,7 +4,8 @@ import type { Sheet } from './model/sheet'
 import type { Summary } from './model/summary'
 import type { Topic } from './model/topic'
 import type { Workbook } from './model/workbook'
-import { type NamedResourceData, makeImageResourceStorage } from './storage'
+import { makeImageResourceStorage } from './storage'
+import type { NamedResourceData } from '../storage'
 
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>
 

@@ -1,10 +1,6 @@
+import { NamedResourceData, ResourceData, ResourcePath } from '../storage'
+
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
-
-export type ResourcePath = string
-
-export type ResourceData = `data:${string}` | ArrayBuffer | Buffer | Uint8Array
-
-export type NamedResourceData = { data: ResourceData; name: string }
 
 export type ResourceStorage = SimpleStorage<ResourcePath, ResourceData>
 

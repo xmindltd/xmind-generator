@@ -3,12 +3,12 @@ import { makeTopicBuilder } from './internal/builder/topic-builder'
 import { makeWorkbookBuilder } from './internal/builder/workbook-builder'
 import type { RefString, Topic as TopicModel } from './internal/model/topic'
 import type { Sheet as SheetModel } from './internal/model/sheet'
-import type { Workbook } from './internal/model/workbook'
-import type { MarkerId } from './internal/marker'
+import type { Workbook as WorkbookModel } from './internal/model/workbook'
+import type { MarkerId } from './marker'
 import { archive } from './internal/serializer'
 import { makeRelationshipBuilder } from './internal/builder/relationship-builder'
-import type { NamedResourceData } from './internal/storage'
 import { asBuilder } from './internal/builder/types'
+import type { NamedResourceData } from './storage'
 
 export function Topic(title: string): TopicBuilder {
   return makeTopicBuilder(title)
@@ -113,7 +113,7 @@ export function Root(title: string): RootTopicBuilder {
 }
 
 export function Workbook(rootBuilder: ReadonlyArray<RootTopicBuilder> | RootTopicBuilder) {
-  const workbook = asBuilder<Workbook>(
+  const workbook = asBuilder<WorkbookModel>(
     makeWorkbookBuilder(Array.isArray(rootBuilder) ? rootBuilder : [rootBuilder])
   ).build()
   return {

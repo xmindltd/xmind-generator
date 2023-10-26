@@ -1,1 +1,5 @@
-export type { ResourcePath, ResourceData, NamedResourceData } from './internal/storage'
+export type ResourcePath = string
+
+export type ResourceData = `data:${string}` | ArrayBuffer | Buffer | Uint8Array
+
+export type NamedResourceData = { data: ResourceData; name: string }

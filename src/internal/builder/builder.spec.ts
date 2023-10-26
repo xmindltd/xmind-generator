@@ -7,7 +7,7 @@ import {
   Summary,
   RelationshipBuilder
 } from '../../builder'
-import { Marker } from '../marker'
+import { Marker } from '../../marker'
 import { Sheet as SheetModel } from '../model/sheet'
 import { Workbook } from '../model/workbook'
 import { makeWorkbookBuilder } from './workbook-builder'

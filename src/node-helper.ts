@@ -1,7 +1,7 @@
 import { writeFile } from 'fs'
 import { readFile } from 'fs/promises'
 import type { WorkbookBuilder } from './builder'
-import { NamedResourceData } from './internal/storage'
+import type { NamedResourceData } from './storage'
 
 export async function writeLocalFile(workbook: WorkbookBuilder, pathToFile: string) {
   const buffer = await workbook.archive()

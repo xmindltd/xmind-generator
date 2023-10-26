@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { Root, RootTopicBuilder } from '../builder'
 import { Sheet } from './model/sheet'
 import { Topic } from './model/topic'
-import { Marker } from './marker'
+import { Marker } from '../marker'
 import { Workbook } from './model/workbook'
 import { makeWorkbookBuilder } from './builder/workbook-builder'
 import {

@@ -1,8 +1,8 @@
 import { type RefString, Topic, type TopicAttributes } from '../model/topic'
 import { type SummaryBuilder, type TopicBuilder } from '../../builder'
 import { makeReference, mergeReferences, type Reference } from './ref'
-import type { MarkerId } from '../marker'
-import { type NamedResourceData } from '../storage'
+import type { MarkerId } from '../../marker'
+import { type NamedResourceData } from '../../storage'
 import { type SummaryInfo, asBuilder } from './types'
 
 export function makeTopicBuilder(title: string) {
