@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   Topic,
-  Root,
+  RootTopic,
   Sheet,
   Relationship,
   Summary,
@@ -19,7 +19,7 @@ describe('[builder] *', () => {
   it('should create a workbook', () => {
     workbook = asBuilder<Workbook>(
       makeWorkbookBuilder([
-        Root('Grill House')
+        RootTopic('Grill House')
           .ref('topic:inf')
           .children([
             Topic('Salad')

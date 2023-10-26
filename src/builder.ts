@@ -65,7 +65,7 @@ export function Summary(
   } as SummaryBuilder
 }
 
-export function Root(title: string): RootTopicBuilder {
+export function RootTopic(title: string): RootTopicBuilder {
   const sheetBuilder = makeSheetBuilder()
   const topicBuilder = makeTopicBuilder(title)
   sheetBuilder.rootTopic(topicBuilder as TopicBuilder)

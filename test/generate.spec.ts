@@ -3,7 +3,7 @@ import { existsSync } from 'fs'
 import { describe, it, expect } from 'vitest'
 import {
   Topic,
-  Root,
+  RootTopic,
   Relationship,
   Summary,
   Workbook,
@@ -16,7 +16,7 @@ describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
     const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
     const document = Workbook(
-      Root('Grill House')
+      RootTopic('Grill House')
         .image(image)
         .children([
           Topic('Salad')

@@ -5,7 +5,7 @@ export {
   type RelationshipBuilder,
   type SummaryBuilder,
   Workbook,
-  Root,
+  RootTopic,
   Topic,
   Relationship,
   Summary

@@ -15,11 +15,11 @@
 **Build document**
 
 ```javascript
-import { Topic, Root, Relationship, Summary, Marker, Workbook, writeLocalFile, readLocalImage } from 'xmind-generator'
+import { Topic, RootTopic, Relationship, Summary, Marker, Workbook, writeLocalFile, readLocalImage } from 'xmind-generator'
 // Note: `readImageFile` helper is only available in the Node.js runtime
 const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
 const workbook = Workbook(
-  Root('Grill House')
+  RootTopic('Grill House')
     .image(image)
     .children([
       Topic('Salad')
@@ -67,7 +67,7 @@ The `Root` and `Topic` builders create nodes in the mind map structure. The `Roo
 
  ```javascript
 Workbook(
-  Root('Grill House')
+  RootTopic('Grill House')
   // Give the node a reference
   .ref('topic:inf')
   .children([
@@ -113,7 +113,7 @@ Topic('Grill House').summaries([Summary('summary title..', { from: 'topic:foo', 
 Applies relationships.
 ```javascript
 // Note: `relationships` method is only available on the `Root` builder
-Root('Grill House').relationships([Relationship('title...', { from: 'topic:foo', to: 'topic:bar' })])
+RootTopic('Grill House').relationships([Relationship('title...', { from: 'topic:foo', to: 'topic:bar' })])
 ```
 
 ## Example
