@@ -32,7 +32,7 @@ export async function computeResourcePath(resource: NamedResourceData) {
 }
 
 function fileExtname(filePath: string) {
-  return filePath.split('.').pop()
+  return filePath.lastIndexOf('.') !== -1 ? filePath.substring(filePath.lastIndexOf('.') + 1) : ''
 }
 
 async function generateSHA256Hash(data: ResourceData) {

@@ -19,7 +19,7 @@ import { asBuilder } from './builder/types'
 describe('[serializer] serializeWorkbook', () => {
   it('should serialize a workbook', async () => {
     const workbook = asBuilder<Workbook>(
-      makeWorkbookBuilder([RootTopic('Grill House') as RootTopicBuilder])
+      makeWorkbookBuilder([RootTopic('Grill House')])
     ).build()
     const serializedWorkbook = await serializeWorkbook(workbook, makeImageResourceStorage().set)
     expect(serializedWorkbook).toBeDefined()

@@ -25,9 +25,11 @@ describe('[internal/storage] makeImageResourceStorage()', () => {
 
   it('should get data from storage properly', async () => {
     const imageStorage = makeImageResourceStorage()
-    const key = (await imageStorage.set({ name: 'test', data: Buffer.from('test') })) ?? ''
+    const key = (await imageStorage.set({ name: 'test.png', data: Buffer.from('test') })) ?? ''
+    expect(key.substring(key.lastIndexOf('.'))).toEqual('.png')
     expect((imageStorage.get(key) as Buffer).toString()).toBe('test')
     const key2 = (await imageStorage.set({ name: 'test', data: 'data:image/aabbcc' })) ?? ''
+    expect(key2.lastIndexOf('.')).toBe(-1)
     expect(imageStorage.get(key2)).toBe('data:image/aabbcc')
   })
 })
