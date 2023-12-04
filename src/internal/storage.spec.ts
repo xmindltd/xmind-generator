@@ -29,7 +29,8 @@ describe('[internal/storage] makeImageResourceStorage()', () => {
     expect(key.substring(key.lastIndexOf('.'))).toEqual('.png')
     expect((imageStorage.get(key) as Buffer).toString()).toBe('test')
     const key2 = (await imageStorage.set({ name: 'test', data: 'data:image/aabbcc' })) ?? ''
-    expect(key2.lastIndexOf('.')).toBe(-1)
+    // Should be a valid SHA256 hash
+    expect(key2).toMatch(/^[A-Fa-f0-9]{64}$/)
     expect(imageStorage.get(key2)).toBe('data:image/aabbcc')
   })
 })
