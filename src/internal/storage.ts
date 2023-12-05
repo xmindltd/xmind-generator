@@ -31,8 +31,8 @@ export async function computeResourcePath(resource: NamedResourceData) {
   return extname ? `${hash}.${extname}` : hash
 }
 
-function fileExtname(filePath: string) {
-  return filePath.lastIndexOf('.') !== -1 ? filePath.substring(filePath.lastIndexOf('.') + 1) : ''
+function fileExtname(fileName: string) {
+  return fileName.lastIndexOf('.') !== -1 ? fileName.substring(fileName.lastIndexOf('.') + 1) : ''
 }
 
 async function generateSHA256Hash(data: ResourceData) {
