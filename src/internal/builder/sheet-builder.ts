@@ -1,16 +1,19 @@
 import { Sheet } from '../model/sheet'
-import { type RelationshipInfo, SheetBuilder, TopicBuilder } from '../../builder'
+import type { SheetBuilder, TopicBuilder, RelationshipBuilder } from '../../builder'
+import type { Topic } from '../model/topic'
+import { type Reference } from './ref'
+import { type RelationshipInfo, asBuilder } from './types'
 
-export function makeSheetBuilder(title?: string): SheetBuilder {
+export function makeSheetBuilder(title?: string) {
   let rootTopicBuilder: TopicBuilder
-  const relationshipInfos: RelationshipInfo[] = []
+  const relationshipBuilders: RelationshipBuilder[] = []
   return {
     rootTopic(topicBuilder: TopicBuilder) {
       rootTopicBuilder = topicBuilder
       return this
     },
-    relationships(relationships: ReadonlyArray<RelationshipInfo>) {
-      relationshipInfos.push(...relationships)
+    relationships(relationships: ReadonlyArray<RelationshipBuilder>) {
+      relationshipBuilders.push(...relationships)
       return this
     },
     title(sheetTitle: string) {
@@ -18,12 +21,14 @@ export function makeSheetBuilder(title?: string): SheetBuilder {
       return this
     },
     build() {
-      const { topic: rootTopic, reference } = rootTopicBuilder?.build() ?? {}
+      const { topic: rootTopic, reference } =
+        asBuilder<{ topic: Topic; reference: Reference<Topic> }>(rootTopicBuilder)?.build() ?? {}
       const sheet = new Sheet(title, rootTopic)
-      relationshipInfos.forEach(({ title, from, to }) =>
+      relationshipBuilders.forEach(builder => {
+        const { title, from, to } = asBuilder<RelationshipInfo>(builder).build()
         sheet.addRelationship(title, reference.fetch(from).id, reference.fetch(to).id)
-      )
+      })
       return sheet
     }
-  }
+  } as SheetBuilder
 }

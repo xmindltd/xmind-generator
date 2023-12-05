@@ -1,52 +1,61 @@
 import { describe, it, expect } from 'vitest'
-import { topic, root, sheet, builder, relationship, summary } from '../../builder'
-import { Marker } from '../marker'
-import { Sheet } from '../model/sheet'
+import {
+  Topic,
+  RootTopic,
+  Sheet,
+  Relationship,
+  Summary,
+  RelationshipBuilder
+} from '../../builder'
+import { Marker } from '../../marker'
+import { Sheet as SheetModel } from '../model/sheet'
 import { Workbook } from '../model/workbook'
+import { makeWorkbookBuilder } from './workbook-builder'
+import { asBuilder } from './types'
 
 let workbook: Workbook
 
 describe('[builder] *', () => {
   it('should create a workbook', () => {
-    workbook = builder()
-      .create([
-        root('Grill House')
+    workbook = asBuilder<Workbook>(
+      makeWorkbookBuilder([
+        RootTopic('Grill House')
           .ref('topic:inf')
           .children([
-            topic('Salad')
+            Topic('Salad')
               .ref('topic:foo')
-              .image('data:image/png;base64,...', 'png')
+              .image({ name: 'test', data: 'data:image/png;base64,...' })
               .note('This is notes')
               .markers([Marker.Arrow.refresh])
               .children([
-                topic('Garden Salad')
+                Topic('Garden Salad')
                   .ref('topic:baz')
                   .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
-                topic('Tomato Salad').ref('topic:qux')
+                Topic('Tomato Salad').ref('topic:qux')
               ]),
-            topic('Starters')
+            Topic('Starters')
               .ref('topic:bar')
               .note('With free soft drink')
               .children([
-                topic('Smoked Bacon').ref('topic:fred'),
-                topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
+                Topic('Smoked Bacon').ref('topic:fred'),
+                Topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
               ])
           ])
           .relationships([
-            relationship('', { from: 'topic:foo', to: 'topic:bar' }),
-            relationship('Special', {
+            Relationship('', { from: 'topic:foo', to: 'topic:bar' }),
+            Relationship('Special', {
               from: 'Smoked Bacon',
               to: 'Fried Chicken'
             })
           ])
           .summaries([
-            summary('Fresh and Delicious', {
+            Summary('Fresh and Delicious', {
               from: 'topic:foo',
               to: 'topic:bar'
             })
           ])
       ])
-      .build()
+    ).build()
 
     expect(workbook).instanceOf(Workbook)
 
@@ -54,7 +63,7 @@ describe('[builder] *', () => {
     expect(workbook.sheets[0].rootTopic?.ref).toBe('topic:inf')
 
     expect(workbook.sheets[0].rootTopic?.children.length).toBe(2)
-    expect(workbook.sheets[0].rootTopic?.children[0].image?.type).toBe('png')
+    expect(workbook.sheets[0].rootTopic?.children[0].image).toBeDefined()
     expect(workbook.sheets[0].rootTopic?.children[0].note).toBe('This is notes')
     expect(workbook.sheets[0].rootTopic?.children[0].markers).toEqual([Marker.Arrow.refresh])
 
@@ -81,20 +90,26 @@ describe('[builder] *', () => {
 
   it('should throw exception if ref in relationship info is invalid', () => {
     expect(() =>
-      sheet()
-        .rootTopic(
-          topic('root').children([
-            topic('Salad').ref('topic:foo'),
-            topic('Starters').ref('topic:bar')
+      asBuilder<SheetModel>(
+        Sheet()
+          .rootTopic(
+            Topic('root').children([
+              Topic('Salad').ref('topic:foo'),
+              Topic('Starters').ref('topic:bar')
+            ])
+          )
+          .relationships([
+            Relationship('', {
+              from: 'topic:errorRef',
+              to: 'topic:bar'
+            }) as RelationshipBuilder
           ])
-        )
-        .relationships([relationship('', { from: 'topic:errorRef', to: 'topic:bar' })])
-        .build()
+      ).build()
     ).toThrowError('Missing Ref "topic:errorRef"')
   })
 
   it('should create a sheet attached to workbook', () => {
-    expect(workbook?.sheets[0]).instanceOf(Sheet)
+    expect(workbook?.sheets[0]).instanceOf(SheetModel)
     expect(workbook?.sheets[0].title).toBe('')
   })
 

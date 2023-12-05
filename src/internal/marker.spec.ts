@@ -1,23 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { Marker } from './marker'
-
-describe('[marker] fetch marker', () => {
-  it('should fetch the correct marker id', () => {
-    expect(Marker.Arrow.left.id).toBe('arrow-left')
-    expect(Marker.Week.sat.id).toBe('week-sat')
-    expect(Marker.Flag.gray.id).toBe('flag-gray')
-    expect(Marker.People.green.id).toBe('people-green')
-    expect(Marker.Smiley.boring.id).toBe('smiley-boring')
-  })
-})
+import { Marker } from '../marker'
+import { isSameGroupWith } from './marker'
 
 describe('[marker] check same group between two markerIds', () => {
   it('should be same group', () => {
-    expect(Marker.Smiley.cry.isSameGroup(Marker.Smiley.embarrass)).toBe(true)
-    expect(Marker.Priority.p3.isSameGroup(Marker.Priority.p5)).toBe(true)
+    expect(isSameGroupWith(Marker.Smiley.cry, Marker.Smiley.embarrass)).toBe(true)
+    expect(isSameGroupWith(Marker.Priority.p3, Marker.Priority.p5)).toBe(true)
   })
   it('should be different group', () => {
-    expect(Marker.Task.oct.isSameGroup(Marker.Smiley.embarrass)).toBe(false)
-    expect(Marker.Month.apr.isSameGroup(Marker.Priority.p3)).toBe(false)
+    expect(isSameGroupWith(Marker.Task.oct, Marker.Smiley.embarrass)).toBe(false)
+    expect(isSameGroupWith(Marker.Month.apr, Marker.Priority.p3)).toBe(false)
   })
 })

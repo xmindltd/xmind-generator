@@ -1,17 +1,15 @@
-import { uuid } from './common'
+import jszip from 'jszip'
 import type { Relationship } from './model/relationship'
 import type { Sheet } from './model/sheet'
 import type { Summary } from './model/summary'
-import type { Topic, TopicImageData } from './model/topic'
+import type { Topic } from './model/topic'
 import type { Workbook } from './model/workbook'
+import { makeImageResourceStorage } from './storage'
+import type { NamedResourceData } from '../storage'
 
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>
 
 type JSONObject = { [x: string]: JSONValue }
-
-export interface SerializedObject {
-  [x: string]: JSONValue
-}
 
 export function asJSONObject(whatever: unknown): JSONObject {
   if (typeof whatever === 'object' && whatever !== null && !Array.isArray(whatever)) {
@@ -29,24 +27,26 @@ export function asJSONArray(whatever: unknown): Array<JSONValue> {
 
 const resourceIdPrefix = 'xap:resources/'
 
-export function serializeWorkbook(
+export async function serializeWorkbook(
   workbook: Workbook,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): ReadonlyArray<SerializedObject> {
-  return workbook.sheets.map(sheet => serializeSheet(sheet, imageResourceSetter))
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
+): Promise<ReadonlyArray<JSONObject>> {
+  return await Promise.all(
+    workbook.sheets.map(async sheet => serializeSheet(sheet, imageResourceSetter))
+  )
 }
 
-export function serializeSheet(
+export async function serializeSheet(
   sheet: Sheet,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): Readonly<SerializedObject> {
-  const obj: SerializedObject = {
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
+): Promise<Readonly<JSONObject>> {
+  const obj: JSONObject = {
     id: sheet.id,
     class: 'sheet',
     title: sheet.title ?? ''
   }
   if (sheet.rootTopic) {
-    obj.rootTopic = serializeTopic(sheet.rootTopic, imageResourceSetter)
+    obj.rootTopic = await serializeTopic(sheet.rootTopic, imageResourceSetter)
   }
   if (sheet.relationships.length > 0) {
     obj.relationships = sheet.relationships.map(relationship => serializeRelationship(relationship))
@@ -54,16 +54,14 @@ export function serializeSheet(
   return obj
 }
 
-export function serializeTopic(
+export async function serializeTopic(
   topic: Topic | Readonly<Topic>,
-  imageResourceSetter: (imageData: TopicImageData) => string | null
-): Readonly<SerializedObject> {
-  const obj: SerializedObject = {
+  imageResourceSetter: (imageData: NamedResourceData) => Promise<string | null>
+): Promise<Readonly<JSONObject>> {
+  const obj: JSONObject = {
     id: topic.id,
     class: 'topic',
-    title: topic.title ?? '',
-    children: { attached: [], summary: [] },
-    summaries: []
+    title: topic.title ?? ''
   }
   const { note, labels, image, markers, summaries } = topic
 
@@ -73,16 +71,20 @@ export function serializeTopic(
     }
   }
 
-  obj.labels = labels as string[]
+  if (labels.length > 0) {
+    obj.labels = [...labels]
+  }
 
   if (topic.children.length > 0) {
     obj.children = {
-      attached: topic.children.map(child => serializeTopic(child, imageResourceSetter))
+      attached: await Promise.all(
+        topic.children.map(async child => serializeTopic(child, imageResourceSetter))
+      )
     }
   }
 
   if (image) {
-    const resourcePath = imageResourceSetter(image)
+    const resourcePath = await imageResourceSetter(image)
     if (resourcePath) {
       obj.image = {
         src: resourceIdPrefix + resourcePath
@@ -90,28 +92,35 @@ export function serializeTopic(
     }
   }
 
-  obj.markers = markers.length > 0 ? markers.map(marker => ({ markerId: marker.id })) : []
+  if (markers.length > 0) {
+    obj.markers = markers.map(marker => ({ markerId: marker.id }))
+  }
 
   if (summaries.length > 0) {
     const summaryTopics: Array<JSONObject> = []
-    summaries.forEach(summary => {
-      const serializedSummary = serializeSummary(topic, summary)
+    for (const summary of summaries) {
+      const serializedSummary = serializeSummaryInfo(topic, summary)
       if (serializedSummary) {
-        const topicId = uuid()
         obj.summaries = [
-          ...asJSONArray(obj.summaries),
-          asJSONObject({ ...serializedSummary, topicId })
+          ...asJSONArray(obj.summaries ?? []),
+          asJSONObject({ ...serializedSummary, topicId: summary.summaryTopic.id })
         ]
-        summaryTopics.push(asJSONObject({ id: topicId, class: 'topic', title: summary.title }))
+        summaryTopics.push(await serializeTopic(summary.summaryTopic, imageResourceSetter))
       }
-    })
-    obj.children = { ...asJSONObject(obj.children), summary: summaryTopics }
+    }
+
+    if (summaryTopics.length > 0) {
+      obj.children = {
+        ...asJSONObject(obj.children ?? {}),
+        summary: summaryTopics
+      }
+    }
   }
 
   return obj
 }
 
-export function serializeRelationship(relationship: Relationship): Readonly<SerializedObject> {
+export function serializeRelationship(relationship: Relationship): Readonly<JSONObject> {
   return {
     id: relationship.id,
     class: 'relationship',
@@ -121,10 +130,10 @@ export function serializeRelationship(relationship: Relationship): Readonly<Seri
   }
 }
 
-export function serializeSummary(
+export function serializeSummaryInfo(
   topic: Readonly<Topic>,
   summary: Summary
-): Readonly<SerializedObject> | null {
+): Readonly<JSONObject> | null {
   const { id, from, to } = summary
   const rangeStart =
     typeof from === 'number' ? from : topic.children.findIndex(child => child.query(from))
@@ -138,4 +147,36 @@ export function serializeSummary(
     class: 'summary',
     range: `(${range.join(',')})`
   }
+}
+
+export async function archive(workbook: Workbook): Promise<ArrayBuffer> {
+  const zip = new jszip()
+
+  const { storage, set } = makeImageResourceStorage()
+  const serializedWorkbook = await serializeWorkbook(workbook, set)
+  const content = JSON.stringify(serializedWorkbook)
+  zip.file('content.json', content)
+
+  const metadata = asJSONObject({ creator: { name: 'xmind-generator' }, dataStructureVersion: '2' })
+  zip.file('metadata.json', JSON.stringify(metadata))
+
+  const resources = zip.folder('resources')
+  const resourcePaths = []
+  for (const [path, data] of Object.entries(storage)) {
+    resources?.file(path, data)
+    resourcePaths.push(`resources/${path}`)
+  }
+
+  zip.file(
+    'manifest.json',
+    JSON.stringify({
+      'file-entries': {
+        'content.json': {},
+        'metadata.json': {},
+        ...Object.fromEntries(new Map(resourcePaths.map(path => [path, {}])))
+      }
+    })
+  )
+
+  return await zip.generateAsync({ type: 'arraybuffer', compression: 'STORE' })
 }

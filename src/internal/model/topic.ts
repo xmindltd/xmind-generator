@@ -1,15 +1,10 @@
 import { uuid } from '../common'
-import type { MarkerId } from '../marker'
-import type { ImageSource, ImageType } from '../storage'
+import type { MarkerId } from '../../marker'
+import type { NamedResourceData } from '../../storage'
 import { Summary } from './summary'
 
 export type TopicId = string
 export type RefString = string
-
-export type TopicImageData = {
-  data: ImageSource
-  type: ImageType
-}
 
 export type TopicAttributes = {
   ref?: RefString
@@ -26,7 +21,7 @@ export class Topic {
   private _summaries: Summary[]
   private _markers: MarkerId[]
   private _labels: string[]
-  private _image: TopicImageData | null
+  private _image: NamedResourceData | null
   private _note: string | null
 
   constructor(title: string, attributes?: TopicAttributes, children?: Topic[]) {
@@ -67,7 +62,7 @@ export class Topic {
     return this._markers
   }
 
-  get image(): Readonly<TopicImageData | null> {
+  get image(): NamedResourceData | null {
     return this._image
   }
 
@@ -91,11 +86,8 @@ export class Topic {
     }
   }
 
-  public addImage(imageData: ImageSource, imageType: ImageType): void {
-    this._image = {
-      data: imageData,
-      type: imageType
-    }
+  public addImage(imageData: NamedResourceData): void {
+    this._image = imageData
   }
 
   public addMarker(markerId: MarkerId): void {
@@ -105,11 +97,15 @@ export class Topic {
     this._markers.push(markerId)
   }
 
-  public addSummary(title: string, from: TopicId | number, to: TopicId | number): Summary {
-    const summaryToAdd = new Summary(title, from, to)
-    const summaryFound = this._summaries.find(summary => summary.isEqualTo(summaryToAdd))
-    if (summaryFound) {
-      return summaryFound
+  public addSummary(
+    title: string,
+    from: TopicId | number,
+    to: TopicId | number,
+    summaryTopic: Topic
+  ): Summary | null {
+    const summaryToAdd = new Summary(title, from, to, summaryTopic)
+    if (this._summaries.find(summary => summary.isConflictWith(summaryToAdd))) {
+      return null
     }
     this._summaries.push(summaryToAdd)
     return summaryToAdd

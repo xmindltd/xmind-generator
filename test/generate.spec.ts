@@ -3,20 +3,21 @@ import { existsSync } from 'fs'
 import { describe, it, expect } from 'vitest'
 import {
   Topic,
-  Root,
+  RootTopic,
   Relationship,
   Summary,
-  generateWorkbook,
+  Workbook,
   Marker,
-  helper
+  readImageFile,
+  writeLocalFile
 } from '../src/exports'
 
 describe('write xmind file', () => {
   it('should write workbook to xmind file', async () => {
-    const image = await helper.readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
-    const document = generateWorkbook(
-      Root('Grill House')
-        .image(image.data, image.type)
+    const image = await readImageFile(path.resolve(__dirname, 'xmind.jpeg'))
+    const document = Workbook(
+      RootTopic('Grill House')
+        .image(image)
         .children([
           Topic('Salad')
             .markers([Marker.Arrow.refresh])
@@ -41,7 +42,7 @@ describe('write xmind file', () => {
         ])
         .summaries([Summary('Fresh and Delicious', { from: 'Salad', to: 'topic:bar' })])
     )
-    await helper.saveLocal(document, path.resolve(__dirname, 'Grill House.xmind'))
+    await writeLocalFile(document, path.resolve(__dirname, 'Grill House.xmind'))
     expect(existsSync(path.resolve(__dirname, 'Grill House.xmind'))).toBe(true)
   })
 })

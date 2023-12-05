@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { makeImageResourceStorage, ResourceStorage } from './storage'
+import { makeImageResourceStorage } from './storage'
 
 describe('[internal/storage] makeImageResourceStorage()', () => {
   it('should create a image resource storage', () => {
@@ -9,17 +9,29 @@ describe('[internal/storage] makeImageResourceStorage()', () => {
     expect(imageStorage.get).toBeDefined()
   })
 
-  it('should set storage value properly', () => {
+  it('should set storage value properly', async () => {
     const imageStorage = makeImageResourceStorage()
-    expect(imageStorage.set({ data: Buffer.from('test'), type: 'jpg' })).toBeTypeOf('string')
-    expect(imageStorage.set({ data: 'data:image/aabbcc', type: 'png' })).toBeTypeOf('string')
+    expect(await imageStorage.set({ name: 'test', data: Buffer.from('test') })).toBeTypeOf('string')
+    expect(await imageStorage.set({ name: 'test', data: new ArrayBuffer(0) })).toBeTypeOf('string')
+    expect(await imageStorage.set({ name: 'test.png', data: 'data:image/aabbcc' })).is.equal(
+      await imageStorage.set({ name: 'test.png', data: 'data:image/aabbcc' })
+    )
+    const pathname = await imageStorage.set({ name: 'test.jpeg', data: 'data:image/aabbcc' })
+    expect(pathname?.split('.')[1]).toBe('jpeg')
+    expect(await imageStorage.set({ name: 'test.jpeg', data: 'data:image/aabbcc' })).not.equal(
+      await imageStorage.set({ name: 'test.png', data: 'data:image/aabbcc' })
+    )
   })
 
-  it('should get data from storage properly', () => {
+  it('should get data from storage properly', async () => {
     const imageStorage = makeImageResourceStorage()
-    const key = imageStorage.set({ data: Buffer.from('test'), type: 'png' }) ?? ''
-    expect((imageStorage.get(key)?.data as Buffer).toString()).toBe('test')
-    const key2 = imageStorage.set({ data: 'data:image/aabbcc', type: 'png' }) ?? ''
-    expect(imageStorage.get(key2)?.data).toBe('data:image/aabbcc')
+    const key = (await imageStorage.set({ name: 'test.png', data: Buffer.from('test') })) ?? ''
+    // Should be a valid SHA256 hash with png extension
+    expect(key).toMatch(/^[A-Fa-f0-9]{64}.png$/)
+    expect((imageStorage.get(key) as Buffer).toString()).toBe('test')
+    const key2 = (await imageStorage.set({ name: 'test', data: 'data:image/aabbcc' })) ?? ''
+    // Should be a valid SHA256 hash
+    expect(key2).toMatch(/^[A-Fa-f0-9]{64}$/)
+    expect(imageStorage.get(key2)).toBe('data:image/aabbcc')
   })
 })

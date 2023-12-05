@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { Topic } from './topic'
-import { Marker } from '../marker'
+import { Marker } from '../../marker'
 
 describe('[internal/model/topic] constructor()', () => {
   it('should create a topic', () => {
@@ -62,8 +62,13 @@ describe('[internal/model/topic] addSummary()', () => {
     const topic = new Topic('Smoked Bacon')
     const childTopicFoo = topic.addTopic('ice')
     const childTopicBar = topic.addTopic('fire')
-    const summary = topic.addSummary('summary', childTopicBar.id, childTopicFoo.id)
-    expect(summary.title).toBe('summary')
+    const summary = topic.addSummary(
+      'summary',
+      childTopicBar.id,
+      childTopicFoo.id,
+      new Topic('summary')
+    )
+    expect(summary?.title).toBe('summary')
     expect(topic.summaries?.[0]).toBe(summary)
   })
 })
