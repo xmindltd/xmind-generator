@@ -1,10 +1,6 @@
+import { NamedResourceData, ResourceData, ResourcePath } from '../storage'
+
 export type SimpleStorage<K extends string, V> = { [key in K]: V }
-
-export type ResourcePath = string
-
-export type ResourceData = `data:${string}` | ArrayBuffer | Buffer | Uint8Array
-
-export type NamedResourceData = { data: ResourceData; name: string }
 
 export type ResourceStorage = SimpleStorage<ResourcePath, ResourceData>
 
@@ -35,9 +31,8 @@ export async function computeResourcePath(resource: NamedResourceData) {
   return extname ? `${hash}.${extname}` : hash
 }
 
-function fileExtname(filePath: string) {
-  const fileExtensionMatch = filePath.match(/\.(.+)$/)
-  return fileExtensionMatch ? fileExtensionMatch[1] : ''
+function fileExtname(fileName: string) {
+  return fileName.lastIndexOf('.') !== -1 ? fileName.substring(fileName.lastIndexOf('.') + 1) : ''
 }
 
 async function generateSHA256Hash(data: ResourceData) {

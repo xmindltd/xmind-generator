@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue'
-import { Topic, Root, Relationship, Summary, Marker, Workbook } from 'xmind-generator'
+import { Topic, RootTopic, Relationship, Summary, Marker, Workbook } from 'xmind-generator'
 import { XMindEmbedViewer } from 'xmind-embed-viewer'
 
 const embedViewerEl = ref<HTMLElement>()
@@ -20,8 +20,8 @@ const loadXmindFileToViewer = (xmindFile: ArrayBuffer) =>
 const generateXmindFileOne = async () => {
   const imageBuffer = await fetch('xmind.jpeg').then(response => response.arrayBuffer())
   return Workbook(
-    Root('Grill House')
-      .image(imageBuffer, 'jpeg')
+    RootTopic('Grill House')
+      .image({ data: imageBuffer, name: 'xmind.jpeg' })
       .children([
         Topic('Salad')
           .markers([Marker.Arrow.refresh])
@@ -50,16 +50,16 @@ const generateXmindFileTwo = async () => {
   const imageCoffeeBuffer = await fetch('coffee.svg').then(response => response.arrayBuffer())
   const imageClockBuffer = await fetch('clock.svg').then(response => response.arrayBuffer())
   return Workbook(
-    Root('Weekly Report').children([
+    RootTopic('Weekly Report').children([
       Topic("What  I've Done This Week")
-        .image(imageCoffeeBuffer, 'svg')
+        .image({ data: imageCoffeeBuffer, name: 'coffee.svg' })
         .markers([Marker.Star.red])
         .children([Topic('Item 1'), Topic('Item 2'), Topic('Item 3')]),
       Topic('My Plans for Next Week')
         .markers([Marker.Star.orange])
         .children([Topic('Item 1'), Topic('Item 2'), Topic('Item 3')]),
       Topic('Self-Reflection')
-        .image(imageClockBuffer, 'svg')
+        .image({ data: imageClockBuffer, name: 'clock.svg' })
         .markers([Marker.Star.purple])
         .children([
           Topic('Problems Encountered'),

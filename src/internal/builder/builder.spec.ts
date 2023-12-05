@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import {
-  generateTopic,
-  generateRoot,
-  generateSheet,
-  generateRelationship,
-  generateSummary,
+  Topic,
+  RootTopic,
+  Sheet,
+  Relationship,
+  Summary,
   RelationshipBuilder
 } from '../../builder'
-import { Marker } from '../marker'
-import { Sheet } from '../model/sheet'
+import { Marker } from '../../marker'
+import { Sheet as SheetModel } from '../model/sheet'
 import { Workbook } from '../model/workbook'
 import { makeWorkbookBuilder } from './workbook-builder'
 import { asBuilder } from './types'
@@ -19,37 +19,37 @@ describe('[builder] *', () => {
   it('should create a workbook', () => {
     workbook = asBuilder<Workbook>(
       makeWorkbookBuilder([
-        generateRoot('Grill House')
+        RootTopic('Grill House')
           .ref('topic:inf')
           .children([
-            generateTopic('Salad')
+            Topic('Salad')
               .ref('topic:foo')
               .image({ name: 'test', data: 'data:image/png;base64,...' })
               .note('This is notes')
               .markers([Marker.Arrow.refresh])
               .children([
-                generateTopic('Garden Salad')
+                Topic('Garden Salad')
                   .ref('topic:baz')
                   .labels(['Lemon Vinaigrette', 'Ginger Dressing']),
-                generateTopic('Tomato Salad').ref('topic:qux')
+                Topic('Tomato Salad').ref('topic:qux')
               ]),
-            generateTopic('Starters')
+            Topic('Starters')
               .ref('topic:bar')
               .note('With free soft drink')
               .children([
-                generateTopic('Smoked Bacon').ref('topic:fred'),
-                generateTopic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
+                Topic('Smoked Bacon').ref('topic:fred'),
+                Topic('Fried Chicken').ref('topic:thud').labels(['Hot Chilli'])
               ])
           ])
           .relationships([
-            generateRelationship('', { from: 'topic:foo', to: 'topic:bar' }),
-            generateRelationship('Special', {
+            Relationship('', { from: 'topic:foo', to: 'topic:bar' }),
+            Relationship('Special', {
               from: 'Smoked Bacon',
               to: 'Fried Chicken'
             })
           ])
           .summaries([
-            generateSummary('Fresh and Delicious', {
+            Summary('Fresh and Delicious', {
               from: 'topic:foo',
               to: 'topic:bar'
             })
@@ -90,16 +90,16 @@ describe('[builder] *', () => {
 
   it('should throw exception if ref in relationship info is invalid', () => {
     expect(() =>
-      asBuilder<Sheet>(
-        generateSheet()
+      asBuilder<SheetModel>(
+        Sheet()
           .rootTopic(
-            generateTopic('root').children([
-              generateTopic('Salad').ref('topic:foo'),
-              generateTopic('Starters').ref('topic:bar')
+            Topic('root').children([
+              Topic('Salad').ref('topic:foo'),
+              Topic('Starters').ref('topic:bar')
             ])
           )
           .relationships([
-            generateRelationship('', {
+            Relationship('', {
               from: 'topic:errorRef',
               to: 'topic:bar'
             }) as RelationshipBuilder
@@ -109,7 +109,7 @@ describe('[builder] *', () => {
   })
 
   it('should create a sheet attached to workbook', () => {
-    expect(workbook?.sheets[0]).instanceOf(Sheet)
+    expect(workbook?.sheets[0]).instanceOf(SheetModel)
     expect(workbook?.sheets[0].title).toBe('')
   })
 
