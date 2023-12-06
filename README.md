@@ -4,11 +4,18 @@
 
 ## Contents
 
-<!-- - [Install](#Install) -->
+- [Install](#Install)
 - [Usage](#usage)
 - [Interface](#interface)
 - [Example](#example)
 - [License](#license)
+
+## Install
+**Install `xmind-generator` with your favorite package manager:**
+
+```sh
+npm i xmind-generator
+```
 
 ## Usage
 
