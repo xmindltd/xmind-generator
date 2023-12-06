@@ -2,11 +2,9 @@ import type { WorkbookBuilder } from './builder'
 import type { NamedResourceData } from './storage'
 
 export async function writeLocalFile(workbook: WorkbookBuilder, pathToFile: string) {
-  const { writeFile } = await import('fs')
+  const { writeFile } = await import('fs/promises')
   const buffer = await workbook.archive()
-  writeFile(pathToFile, Buffer.from(buffer), err => {
-    if (err) throw err
-  })
+  await writeFile(pathToFile, Buffer.from(buffer))
 }
 
 export async function readImageFile(filePath: string): Promise<NamedResourceData> {
