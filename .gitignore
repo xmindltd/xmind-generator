@@ -12,3 +12,4 @@ yarn-error.log*
 .dev
 
 test/*.xmind
+.vscode
